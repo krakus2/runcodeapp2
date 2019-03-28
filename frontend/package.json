@@ -1,0 +1,44 @@
+{
+   "name": "frontend",
+   "version": "0.1.0",
+   "private": true,
+   "dependencies": {
+      "@atlaskit/field-text": "^8.0.1",
+      "@zendeskgarden/react-select": "^3.5.5",
+      "@zendeskgarden/react-textfields": "^3.8.3",
+      "@zendeskgarden/react-theming": "^3.2.1",
+      "axios": "^0.18.0",
+      "monaco-editor-webpack-plugin": "^1.7.0",
+      "node-sass": "^4.11.0",
+      "react": "^16.8.5",
+      "react-dom": "^16.8.5",
+      "react-md": "^1.9.3",
+      "react-monaco-editor": "^0.25.1",
+      "react-router-dom": "^5.0.0",
+      "react-scripts": "2.1.8",
+      "styled-components": "^3.5.0-0",
+      "webfontloader": "^1.6.28"
+   },
+   "scripts": {
+      "start": "react-app-rewired start",
+      "build": "react-app-rewired build",
+      "test": "react-app-rewired test",
+      "eject": "react-scripts eject"
+   },
+   "eslintConfig": {
+      "extends": "react-app"
+   },
+   "browserslist": [
+      ">0.2%",
+      "not dead",
+      "not ie <= 11",
+      "not op_mini all"
+   ],
+   "proxy": "http://localhost:5000",
+   "devDependencies": {
+      "enzyme": "^3.9.0",
+      "enzyme-adapter-react-16": "^1.11.2",
+      "enzyme-to-json": "^3.3.5",
+      "react-app-rewired": "^2.1.1"
+   }
+}
