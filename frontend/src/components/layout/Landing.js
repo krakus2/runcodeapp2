@@ -11,8 +11,7 @@ import Testy from './form/Testy';
 import Editor from './form/Editor';
 import Rekurencja from './form/Rekurencja';
 import BladLubKomunikat from './form/BladLubKomunikat';
-import { FormWrapper, Wrapper, MyPaper } from '../../styles/layout/Landing';
-/* import { withStyles } from '@material-ui/core/styles'; */
+import { Form, Wrapper, MyPaper } from '../../styles/layout/Landing';
 
 //TODO - dodac ikonke i tytul, ktore sie beda wyswietlac na karcie w chrome
 class Landing extends Component {
@@ -253,15 +252,12 @@ class Landing extends Component {
    };
 
    handleSwitchChange = name => event => {
-      console.log(event.target.checked);
-      this.setState({ [name]: event.target.checked }, () => {
-         console.log('no elo', name);
-      });
+      this.setState({ [name]: event.target.checked });
    };
 
-   handleArgTypeChange = i => j => arrayName => value => {
+   handleArgTypeChange = i => j => arrayName => valueObject => {
       let args = [...this.state[arrayName]];
-      args[i * 2 + j] = value;
+      args[i * 2 + j] = valueObject === null ? valueObject : valueObject.value;
 
       this.setState({ [arrayName]: args }, () => {
          const indeksyTablic = this.wyliczIndeksyTablic();
@@ -293,9 +289,9 @@ class Landing extends Component {
       return indeksyTablic;
    };
 
-   handleWynikiChange = i => value => {
+   handleWynikiChange = i => event => {
       const wyniki = [...this.state.wyniki];
-      wyniki[i] = value; //.replace(/\s/, '');
+      wyniki[i] = event.target.value; //.replace(/\s/, '');
       this.setState({ wyniki });
    };
 
@@ -373,7 +369,7 @@ class Landing extends Component {
          code
       } = this.state;
       const argsCheck =
-         (this.isEmpty(args) && iloscArg !== 0) || this.isEmpty(returnArgs); //|| this.isEmpty(wyniki);
+         (this.isEmpty(args) && iloscArg !== 0) || this.isEmpty(returnArgs);
 
       const isInvalid =
          opisZadania === '' ||
@@ -384,12 +380,8 @@ class Landing extends Component {
          zlaNazwaFunkcji;
       return (
          <Wrapper>
-            <MyPaper
-               isMobile={
-                  context.isMobile
-               } /*classes={{ root: classes.paper }} elevation={1}*/
-            >
-               <FormWrapper onSubmit={this.onSubmit}>
+            <MyPaper isMobile={context.isMobile}>
+               <Form onSubmit={this.onSubmit}>
                   <PolaTekstowe
                      classes={classes}
                      error={error}
@@ -436,7 +428,7 @@ class Landing extends Component {
                      loading={loading}
                      onSubmitClick={this.onSubmitClick}
                   />
-               </FormWrapper>
+               </Form>
                <BladLubKomunikat
                   error={error}
                   postSuccess={postSuccess}

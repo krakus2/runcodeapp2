@@ -1,48 +1,45 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { SelectField } from 'react-md';
+import { withTheme } from 'styled-components';
+import Select from 'react-select';
 import withContext from '../../../context/Context_HOC';
-//import { SelectField, Label, Hint, Select, Item } from '@zendeskgarden/react-select';
-
-/* const DATA = {
-   'item-1': 'Item 1',
-   'item-2': 'Item 2',
-   'item-3': 'Item 3'
-}; */
-/* 
-const returnValue = (args, secondColumn, i) => {
-   let conditionalValue;
-   if (secondColumn === true) {
-      if (args[i * 2 + 1] === null || args[i * 2 + 1] === undefined) {
-         conditionalValue = '';
-      } else {
-         conditionalValue = args[i * 2 + 1];
-      }
-   } else {
-      if (args[i * 2 + 1] === null || args[i * 2] === undefined) {
-         conditionalValue = '';
-      } else {
-         conditionalValue = args[i * 2];
-      }
-   }
-}; */
+import { addAlphaChannel } from '../../../utils/utils';
 
 class SelectElem extends Component {
-   /*    state = {
-      selectedKey: 'item-1'
-   }; */
+   colourStyles = {
+      control: styles => ({ ...styles, cursor: 'pointer' }),
+      option: styles => ({ ...styles, cursor: 'pointer' }),
+      input: (styles, { isDisabled, isFocused, isSelected }) => ({
+         ...styles,
+         width: this.props.context.isMobile ? '100%' : '100%',
+         borderColor: isSelected ? 'red' : 'orange',
+         minHeight: '35px',
+         lineHeight: '35px',
+         color: this.props.theme.color,
+         cursor: 'pointer'
+      }),
+      placeholder: styles => ({
+         ...styles,
+         color: this.props.theme.placeholderColor,
+         cursor: 'pointer'
+      }),
+      singleValue: styles => ({
+         ...styles,
+         color: this.props.theme.color,
+         cursor: 'pointer'
+      })
+   };
    render() {
+      //TODO - cos jest nie halo z wybieraniem opcji w selectcie, a szczegolnie z ich kasowaniem
       const {
          i,
          handleArgTypeChange,
-         args,
          argsName,
          secondColumn,
          values,
          title,
-         context
+         args
       } = this.props;
-
       let conditionalValue;
       if (secondColumn === true) {
          if (args[i * 2 + 1] === null || args[i * 2 + 1] === undefined) {
@@ -57,33 +54,31 @@ class SelectElem extends Component {
             conditionalValue = args[i * 2];
          }
       }
-
       return (
-         /*  <SelectField>
-            <Label>Label</Label>
-            <Hint>Hint</Hint>
-            <Select
-               selectedKey={this.state.selectedKey}
-               onChange={selectedKey => this.setState({ selectedKey })}
-               options={[
-                  <Item key="item-1">Item 1</Item>,
-                  <Item key="item-2">Item 2</Item>,
-                  <Item key="item-3">Item 3</Item>
-               ]}
-            >
-               {this.state.selectedKey} is currently selected
-            </Select>
-         </SelectField> */
-         <SelectField
-            id={`select-field${Math.random()}`}
+         <Select
             label={title}
-            className="md-cell md-cell--bottom select-elem"
-            menuItems={values.map((elem, i) => `${elem}`)}
-            simplifiedMenu={false}
-            value={conditionalValue}
+            placeholder={title}
+            options={values.map(elem => ({ value: elem, label: elem }))}
+            styles={this.colourStyles}
+            theme={theme => ({
+               ...theme,
+               colors: {
+                  ...theme.colors,
+                  primary25: addAlphaChannel(this.props.theme.primaryColor, '0.2'),
+                  primary50: addAlphaChannel(this.props.theme.primaryColor, '0.5'),
+                  primary: this.props.theme.primaryColor,
+                  neutral20: this.props.theme.inputBorderColor,
+                  neutral30: this.props.theme.inputBorderColorHover
+               }
+            })}
             onChange={handleArgTypeChange(i)(secondColumn === true ? 1 : 0)(argsName)}
-            style={{ width: context.isMobile ? '45%' : '40%' }}
-            listStyle={{ fontSize: context.isMobile ? '14px' : '16px' }}
+            isClearable
+            value={
+               conditionalValue !== '' && {
+                  value: conditionalValue,
+                  label: conditionalValue
+               }
+            }
          />
       );
    }
@@ -92,11 +87,10 @@ class SelectElem extends Component {
 SelectElem.propTypes = {
    i: PropTypes.number.isRequired,
    handleArgTypeChange: PropTypes.func.isRequired,
-   args: PropTypes.array.isRequired,
    argsName: PropTypes.string.isRequired,
    secondColumn: PropTypes.bool.isRequired,
    values: PropTypes.array.isRequired,
    title: PropTypes.string.isRequired
 };
 
-export default withContext(SelectElem);
+export default withContext(withTheme(SelectElem));

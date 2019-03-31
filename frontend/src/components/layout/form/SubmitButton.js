@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'react-md';
 import Tooltip from '../../utils/Tooltip';
+import Button from './Button';
 import { ButtonWrapper } from '../../../styles/layout/Landing';
 
 const styles = theme => ({
@@ -18,12 +18,10 @@ const Submit = ({ isInvalid, loading, onSubmitClick, classes, isMobile }) => (
          <Tooltip title={`Wypełnij wszystkie obowiązkowe pola, aby przesłać zadanie`}>
             <div>
                <Button
-                  raised
-                  primary
                   type="submit"
-                  disabled
                   onClick={onSubmitClick}
-                  style={{ height: '42px', width: '120px', fontSize: '16px' }}
+                  disabled
+                  /* style={{ height: '42px', width: '120px', fontSize: '16px' }} */
                >
                   {loading ? (
                      <div className="lds-ring">

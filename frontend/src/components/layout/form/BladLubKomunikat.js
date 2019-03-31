@@ -9,6 +9,8 @@ export default function BladLubKomunikat({ error, postSuccess }) {
                isError={true}
                text={`Something went wrong. Try again. Message: \n${error.messages &&
                   error.messages.join('\n')}`}
+               bigMargin
+               textAlign="center"
             />
          )}
          {!!postSuccess && (

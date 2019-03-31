@@ -19,8 +19,8 @@ export default withContext(function({ code, onEditorChange, context }) {
             </div>
          }
       >
-         <RowWrapper leftMargin>
-            <h2>Wklej kod rozwiązania</h2>
+         <RowWrapper>
+            <h3>Wklej kod rozwiązania</h3>
             <p>
                Tu wklej cały kod funkcji, wraz z funkcją Main. W Main należy
                zademonstrować działanie funkcji na przykładowych zestawach testowych.

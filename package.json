@@ -19,6 +19,8 @@
    "author": "Filip Krakowiak",
    "license": "ISC",
    "dependencies": {
-      "concurrently": "^4.1.0"
+      "concurrently": "^4.1.0",
+      "grommet-icons": "^4.2.0",
+      "styled-components": "^4.2.0"
    }
 }

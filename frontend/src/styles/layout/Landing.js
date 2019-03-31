@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { addAlphaChannel } from '../../utils/utils';
 
 export const Wrapper = styled.main`
    font-size: 18px;
@@ -16,12 +17,11 @@ export const MyPaper = styled.div`
    border: 1px solid #e0e4e7;
    border-radius: 4px;
    margin: ${props => (props.isMobile ? '20px auto 0 auto' : '20px 10px')};
-   padding: ${props => (props.isMobile ? '10px 25px 10px 10px' : '32px 63px 32px 48px')};
-   width: ${props => (props.isMobile ? '100vw' : '600px')};
+   padding: ${props => (props.isMobile ? '10px' : '45px 63px')};
+   width: ${props => (props.isMobile ? '100vw' : '550px')};
 `;
 
-export const FormWrapper = styled.form`
-   margin-top: 20px;
+export const Form = styled.form`
    width: 100%;
 `;
 
@@ -32,11 +32,12 @@ export const EditorWrapper = styled.div`
 `;
 
 //TODO - wywalic to do wlasnego komponentu
+/*    ${props => !props.error && 'padding-bottom: 19px'}; */
 export const ButtonWrapper = styled.div`
    display: flex;
    flex-direction: row;
    justify-content: center;
-   ${props => !props.error && 'padding-bottom: 19px'};
+
    ${props => !props.isMobile && 'margin: 0 -10px 0 auto'};
    .lds-ring {
       display: inline-block;
@@ -76,10 +77,34 @@ export const ButtonWrapper = styled.div`
 `;
 
 export const SliderWrapper = styled.div`
-/* prettier-ignore */
-   margin: ${props => props.theme.defaultSpacing} 0 ${props =>
-   props.theme.defaultSpacing} ${props => props.theme.defaultSpacing};
+   display: flex;
+   flex-direction: row;
+   flex-wrap: wrap;
    width: 100%;
+
+   .mySlider {
+      /*  transition: all 2s; */
+      :hover {
+         .rc-slider-handle {
+            box-shadow: 0px 0px 6px -1px ${props => props.theme.primaryColor};
+         }
+         .rc-slider-rail {
+            background-color: ${props => props.theme.disabled};
+         }
+      }
+      :active {
+         .rc-slider-handle {
+            box-shadow: 0px 0px 6px -1px ${props => props.theme.primaryColor};
+         }
+      }
+   }
+`;
+
+export const SelectWrapper = styled.div`
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   column-gap: 15px;
+   margin-bottom: ${props => !props.last && '15px'};
 `;
 
 export const RowWrapper = styled.div`
@@ -99,11 +124,11 @@ export const GridWrapper = styled.div`
    display: grid;
    grid-template-columns: ${props =>
       props.isMobile ? 'repeat(auto-fill, 70px)' : props.grid};
-   grid-auto-rows: 50px;
-   grid-column-gap: 3px;
+   grid-auto-rows: auto;
+   grid-column-gap: 20px;
 `;
 
 export const Span = styled.span`
-   color: ${props => props.theme.primaryColor};
+   color: ${props => addAlphaChannel(props.theme.secondaryColor, '0.95')};
    font-weight: 600;
 `;

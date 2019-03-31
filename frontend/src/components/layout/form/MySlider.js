@@ -1,23 +1,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { SliderWrapper } from '../../../styles/layout/Landing';
-import { Slider } from 'react-md';
+import { withTheme } from 'styled-components';
+import Slider, { createSliderWithTooltip } from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
-const MySlider = ({ handleSliderChange, iloscArg, max }) => {
+import { SliderWrapper } from '../../../styles/layout/Landing';
+
+const SliderWithTooltip = createSliderWithTooltip(Slider);
+
+function percentFormatter(v) {
+   return `${v} %`;
+}
+
+const MySlider = ({ handleSliderChange, iloscArg, max, theme }) => {
    return (
       <SliderWrapper>
-         <h2>Liczba i typ argumentów funkcji</h2>
+         <h3>Liczba i typ argumentów funkcji</h3>
          <p>Określ liczbę i typy parametrów wymaganych przez funkcję.</p>
-         <Slider
-            id="disctete-ticks-slider"
-            discrete
-            max={max}
-            discreteTicks={1}
-            tickWidth={3}
-            valuePrecision={1}
+         <SliderWithTooltip
+            className="mySlider"
+            style={{ margin: '15px 5px' }}
+            activeDotStyle={{
+               borderColor: theme.primaryColor
+            }}
+            dotStyle={{
+               borderColor: theme.disabled
+            }}
+            trackStyle={{ backgroundColor: theme.primaryColor }}
+            handleStyle={{
+               borderColor: theme.primaryColor
+            }}
             value={iloscArg}
             onChange={handleSliderChange}
-            style={{ marginTop: '5px' }}
+            dots
+            step={1}
+            defaultValue={1}
+            max={max}
          />
       </SliderWrapper>
    );
@@ -29,4 +47,4 @@ MySlider.propTypes = {
    max: PropTypes.number.isRequired
 };
 
-export default MySlider;
+export default withTheme(MySlider);

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { addAlphaChannel } from '../../utils/utils';
 
 const SwitchStyles = styled.div`
    display: inline-block;
@@ -53,13 +54,21 @@ const SwitchStyles = styled.div`
       transition-property: left, background-color;
    }
    .switch__input:checked + .switch__label:before {
-      background-color: ${props => `rgba(${props.color}, .5)`};
+      background-color: ${props =>
+         props.color
+            ? `rgba(${props.color}, 0.5)`
+            : addAlphaChannel(props.theme.primaryColor, '0.5')};
    }
    .switch__input:checked + .switch__label:after {
       left: 16px;
-      background-color: ${props => `rgba(${props.color}, 1)`};
+      background-color: ${props =>
+         props.color
+            ? `rgba(${props.color}, 1)`
+            : addAlphaChannel(props.theme.primaryColor, '1')};
    }
 `;
+
+//TODO - przerobic sposob nadawania koloru, na korzystanie z theme
 
 const Switch = ({ text, color, value, onChange }) => (
    <SwitchStyles color={color}>
@@ -76,9 +85,7 @@ const Switch = ({ text, color, value, onChange }) => (
    </SwitchStyles>
 );
 
-Switch.defaultProps = {
-   color: '0, 150, 136'
-};
+Switch.defaultProps = {};
 
 Switch.propTypes = {
    color: PropTypes.string

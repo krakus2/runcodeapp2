@@ -1,14 +1,14 @@
 import React from 'react';
-import { RowWrapper } from '../../../styles/layout/Landing';
+import { SelectWrapper, RowWrapper } from '../../../styles/layout/Landing';
 import SelectElem from './SelectElem';
 
 export default function TypZwracany({ handleArgTypeChange, returnArgs }) {
    return (
       <>
-         <RowWrapper leftMargin>
-            <h2>Typ zwracany</h2>
+         <RowWrapper>
+            <h3>Typ zwracany</h3>
          </RowWrapper>
-         <RowWrapper topMargin40>
+         <SelectWrapper>
             <SelectElem
                i={0}
                handleArgTypeChange={handleArgTypeChange}
@@ -38,7 +38,7 @@ export default function TypZwracany({ handleArgTypeChange, returnArgs }) {
                ]}
                title={`Typ zwracany B`}
             />
-         </RowWrapper>
+         </SelectWrapper>
       </>
    );
 }

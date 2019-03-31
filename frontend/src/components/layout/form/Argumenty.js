@@ -1,6 +1,6 @@
 import React from 'react';
 import MySlider from './MySlider';
-import { RowWrapper } from '../../../styles/layout/Landing';
+import { SelectWrapper } from '../../../styles/layout/Landing';
 import SelectElem from './SelectElem';
 
 export default function Argumenty({
@@ -14,7 +14,7 @@ export default function Argumenty({
          <MySlider handleSliderChange={handleSliderChange} iloscArg={iloscArg} max={5} />
          {Array.from(Array(iloscArg)).map((elem, i) => (
             <React.Fragment key={i}>
-               <RowWrapper topMargin30>
+               <SelectWrapper last={i === iloscArg - 1}>
                   <SelectElem
                      i={i}
                      handleArgTypeChange={handleArgTypeChange}
@@ -44,7 +44,7 @@ export default function Argumenty({
                      ]}
                      title={`Typ B argumentu ${i + 1}`}
                   />
-               </RowWrapper>
+               </SelectWrapper>
             </React.Fragment>
          ))}
       </>

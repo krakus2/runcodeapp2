@@ -11,11 +11,11 @@ export default function StrukturaFunkcji({
 }) {
    return (
       <>
-         <RowWrapper leftMargin>
-            <h2 variant="h6">Struktura funkcji</h2>
+         <RowWrapper>
+            <h3>Struktura funkcji</h3>
          </RowWrapper>
-         <RowWrapper leftMargin>
-            <h5>
+         <RowWrapper>
+            <h4 style={{ margin: 0, fontWeight: 400, fontSize: '17px' }}>
                {nazwaFunkcji.length === 0 ||
                (isEmpty(args) && iloscArg !== 0) ||
                isEmpty(returnArgs) ? (
@@ -23,7 +23,7 @@ export default function StrukturaFunkcji({
                ) : (
                   <Span>{wygenerujStruktureFunkcji()}</Span>
                )}
-            </h5>
+            </h4>
          </RowWrapper>
       </>
    );

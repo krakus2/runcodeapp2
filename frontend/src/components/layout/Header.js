@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withContext from '../../context/Context_HOC';
 import { validateEmail } from '../../utils/utils.js';
-import { TextField } from 'react-md';
+/* import { TextField } from 'react-md'; */
 import { HeaderWrapper, FormWrapper, MyAppBar, Title } from '../../styles/layout/Header';
 import InlineMessage from '../utils/InlineMessage';
-import { Button } from 'react-md';
+/* import { Button } from 'react-md'; */
 
 class Header extends Component {
    state = {
@@ -50,7 +50,7 @@ class Header extends Component {
                   onSubmit={this.onSubmit}
                   isMobile={context.isMobile}
                >
-                  <TextField
+                  {/*  <TextField
                      id="email"
                      className="text-field--header"
                      label="Adres email"
@@ -70,10 +70,10 @@ class Header extends Component {
                      helpText={passwordErr ? 'Wprowadź hasło' : ''}
                      value={password}
                      onChange={this.handleChange('password')}
-                  />
-                  <Button raised primary type="submit" className="button--header">
+                  /> */}
+                  {/* <Button raised primary type="submit" className="button--header">
                      Zaloguj
-                  </Button>
+                  </Button> */}
                   {loginErr && (
                      <InlineMessage
                         isError={true}
