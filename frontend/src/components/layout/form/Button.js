@@ -2,25 +2,33 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const ButtonStyles = styled.button`
-   background-color: rgba(0, 0, 0, 0);
+export const ButtonStyles = styled.button`
+   background-color: ${props => props.theme.secondaryColor};
+   color: white;
+   border: ${props =>
+      props.color
+         ? `2px solid ${props.color}`
+         : `2px solid ${props.theme.secondaryColor}`};
+
    z-index: 2;
-   color: ${props => (props.color ? props.color : props.theme.primaryColor)};
    text-decoration: none;
-   transition: 0.3s ease all;
-   font-size: 18px;
-   letter-spacing: 1.3px;
+   transition: width 0.3s ease;
+   font-size: ${props => props.fontSize};
+   letter-spacing: 1.1px;
    text-transform: uppercase;
    display: inline-block;
    text-align: center;
    width: auto;
    font-family: Roboto;
    font-weight: 500;
-   padding: ${props => (props.rounded ? '20px' : '11px 30px')};
-   border: ${props =>
-      props.color ? `2px solid ${props.color}` : `2px solid ${props.theme.primaryColor}`};
-   border-radius: ${props => (props.rounded ? '50%' : '4px')};
-   position: relative;
+   padding: 0 30px;
+   height: ${props => props.height};
+   ${props => !props.isMobile && 'position: relative'};
+   top: ${props => !props.isMobile && props.top};
+   margin: ${props => props.margin};
+   border-radius: 4px;
+
+   outline: none;
    /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.1); */
    :disabled {
       background-color: ${props => props.theme.disabled};
@@ -42,6 +50,7 @@ const ButtonStyles = styled.button`
    }
    :hover {
       ${props => !props.disabled && 'color: white'};
+      border-color: ${props => props.theme.primaryColor};
       cursor: pointer;
       :before {
          content: '';
@@ -73,15 +82,31 @@ class Button extends React.Component {
       this.myRef.current.blur();
    }
    render() {
-      const { color, disabled, children, rounded, onClick } = this.props;
+      const {
+         color,
+         disabled,
+         children,
+         type,
+         onClick,
+         height,
+         fontSize,
+         top,
+         margin,
+         isMobile
+      } = this.props;
       return (
          <ButtonStyles
             color={color}
             disabled={disabled}
             ref={this.myRef}
             onMouseLeave={this.blur}
-            rounded={rounded}
             onClick={onClick}
+            type={type}
+            height={height}
+            fontSize={fontSize}
+            top={top}
+            margin={margin}
+            isMobile={isMobile}
          >
             {children}
          </ButtonStyles>
@@ -89,7 +114,24 @@ class Button extends React.Component {
    }
 }
 
-Button.defaultProps = {};
-Button.propTypes = {};
+Button.defaultProps = {
+   type: 'button',
+   disabled: false,
+   height: '48px',
+   fontSize: '20px',
+   top: '0',
+   margin: '0',
+   isMobile: false
+};
+Button.propTypes = {
+   type: PropTypes.string,
+   disabled: PropTypes.bool,
+   color: PropTypes.string,
+   height: PropTypes.string,
+   fontSize: PropTypes.string,
+   top: PropTypes.string,
+   margin: PropTypes.string,
+   isMobile: PropTypes.bool
+};
 
 export default Button;

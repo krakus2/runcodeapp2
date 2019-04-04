@@ -24,6 +24,8 @@ const PolaTekstowe = ({
             error={error.types && error.types.some(elem => elem === 'imieINazwisko')}
             message="Podaj imię i nazwisko - autorzy najciekawszych zadań otrzymają punkty
             bonusowe zwiększające ocenę końcową z przedmiotu Wstęp do programowania."
+            margin="0 0 10px 0"
+            width="100%"
          />
          <Input
             name={'tytulZadania'}
@@ -33,6 +35,8 @@ const PolaTekstowe = ({
             onChange={handleTextInputChange('tytulZadania')}
             error={error.types && error.types.some(elem => elem === 'tytulZadania')}
             message="Nadaj zadaniu odpowiedni tytuł."
+            margin="0 0 10px 0"
+            width="100%"
          />
          <Input
             name={'nazwaFunkcji'}
@@ -46,6 +50,8 @@ const PolaTekstowe = ({
             message="Podaj nazwę funkcji, która ma zostać stworzona, np. ZnajdzLiczbe lub
                SzukajWTablicy. Uwaga: Nazwa nie może zawierać spacji, znaków specjalnych
                oraz zaczynać się od cyfry."
+            margin="0 0 10px 0"
+            width="100%"
          />
          <Input
             name={'opisZadania'}
@@ -58,6 +64,8 @@ const PolaTekstowe = ({
             message="Tu wpisz treść zadania, podając co najmniej nazwę funkcji do utworzenia,
                określając jej parametry i definiując jej wymagania np.: Stwórz funkcję int
                ZwrocPodwojona(int a). Funkcja zwraca podwojoną wartość liczby a."
+            margin="0 0 10px 0"
+            width="100%"
          />
       </RowWrapper>
    );

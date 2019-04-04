@@ -3,17 +3,10 @@ import PropTypes from 'prop-types';
 import Tooltip from '../../utils/Tooltip';
 import Button from './Button';
 import { ButtonWrapper } from '../../../styles/layout/Landing';
+import withContext from '../../../context/Context_HOC';
 
-const styles = theme => ({
-   button: {
-      margin: theme.spacing.unit,
-      fontSize: '16px',
-      width: '125px'
-   }
-});
-
-const Submit = ({ isInvalid, loading, onSubmitClick, classes, isMobile }) => (
-   <ButtonWrapper isMobile={isMobile}>
+const Submit = ({ isInvalid, loading, onSubmitClick, context }) => (
+   <ButtonWrapper isMobile={context.isMobile}>
       {isInvalid ? (
          <Tooltip title={`Wypełnij wszystkie obowiązkowe pola, aby przesłać zadanie`}>
             <div>
@@ -21,7 +14,8 @@ const Submit = ({ isInvalid, loading, onSubmitClick, classes, isMobile }) => (
                   type="submit"
                   onClick={onSubmitClick}
                   disabled
-                  /* style={{ height: '42px', width: '120px', fontSize: '16px' }} */
+                  height={context.isMobile ? '44px' : undefined}
+                  fontSize={context.isMobile ? '18px' : undefined}
                >
                   {loading ? (
                      <div className="lds-ring">
@@ -38,11 +32,10 @@ const Submit = ({ isInvalid, loading, onSubmitClick, classes, isMobile }) => (
          </Tooltip>
       ) : (
          <Button
-            raised
-            primary
             type="submit"
             onClick={onSubmitClick}
-            style={{ height: '42px', width: '120px', fontSize: '16px' }}
+            height={context.isMobile ? '44px' : undefined}
+            fontSize={context.isMobile ? '18px' : undefined}
          >
             {loading ? (
                <div className="lds-ring">
@@ -58,9 +51,8 @@ const Submit = ({ isInvalid, loading, onSubmitClick, classes, isMobile }) => (
       )}
    </ButtonWrapper>
 );
-
 Submit.propTypes = {
    isInvalid: PropTypes.bool.isRequired
 };
 
-export default Submit;
+export default withContext(Submit);

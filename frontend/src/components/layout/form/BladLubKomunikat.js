@@ -1,7 +1,8 @@
 import React from 'react';
 import InlineMessage from '../../utils/InlineMessage';
+import { withTheme } from 'styled-components';
 
-export default function BladLubKomunikat({ error, postSuccess }) {
+function BladLubKomunikat({ error, postSuccess, theme }) {
    return (
       <>
          {!!Object.keys(error).length && (
@@ -14,8 +15,18 @@ export default function BladLubKomunikat({ error, postSuccess }) {
             />
          )}
          {!!postSuccess && (
-            <InlineMessage isError={false} text={'Zadanie dodano do bazy'} />
+            <InlineMessage
+               isError={false}
+               text={'Zadanie dodano do bazy'}
+               textAlign="center"
+               fontSize={20}
+               bigMargin
+               bold
+               color={theme.primaryColor}
+            />
          )}
       </>
    );
 }
+
+export default withTheme(BladLubKomunikat);

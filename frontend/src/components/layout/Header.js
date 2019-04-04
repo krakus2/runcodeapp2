@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withContext from '../../context/Context_HOC';
 import { validateEmail } from '../../utils/utils.js';
-/* import { TextField } from 'react-md'; */
+import Input from './form/Input';
 import { HeaderWrapper, FormWrapper, MyAppBar, Title } from '../../styles/layout/Header';
 import InlineMessage from '../utils/InlineMessage';
-/* import { Button } from 'react-md'; */
+import Button, { ButtonStyles } from './form/Button';
 
 class Header extends Component {
    state = {
@@ -50,36 +50,47 @@ class Header extends Component {
                   onSubmit={this.onSubmit}
                   isMobile={context.isMobile}
                >
-                  {/*  <TextField
-                     id="email"
-                     className="text-field--header"
+                  <Input
+                     name={'email'}
                      label="Adres email"
-                     type="text"
                      placeholder="example@example.com"
                      error={emailErr ? true : false}
-                     helpText={emailErr ? 'To nie wygląda na email' : ''}
+                     message={emailErr ? 'To nie wygląda na email' : ''}
                      value={email}
                      onChange={this.handleChange('email')}
+                     small
+                     width={context.isMobile ? '200px' : '250px'}
+                     margin={context.isMobile ? '0 0 10px 0' : '0 10px 0 0'}
+                     disabled
                   />
-                  <TextField
-                     id="haslo"
-                     className="text-field--header"
+                  <Input
+                     name={'haslo'}
                      label="Hasło"
                      type="password"
                      error={passwordErr}
-                     helpText={passwordErr ? 'Wprowadź hasło' : ''}
+                     message={passwordErr ? 'Wprowadź hasło' : ''}
                      value={password}
                      onChange={this.handleChange('password')}
-                  /> */}
-                  {/* <Button raised primary type="submit" className="button--header">
+                     small
+                     width="200px"
+                     disabled
+                  />
+                  <Button
+                     type="submit"
+                     height="36px"
+                     fontSize="14px"
+                     top="7px"
+                     margin={context.isMobile ? '25px 0 25px 0' : '0 0 0 20px'}
+                     disabled
+                     isMobile={context.isMobile}
+                  >
                      Zaloguj
-                  </Button> */}
+                  </Button>
                   {loginErr && (
                      <InlineMessage
                         isError={true}
                         text={'Nie udało się zalogować. Spróbuj ponownie'}
-                        bigMargin={false}
-                        small={true}
+                        fontSize={12}
                      />
                   )}
                </FormWrapper>

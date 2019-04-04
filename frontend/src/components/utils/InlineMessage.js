@@ -4,11 +4,15 @@ import styled from 'styled-components';
 
 const InlineMessageStyles = styled.div`
    color: ${props =>
-      props.isError ? props.theme.errorColor : props.color || props.theme.lighterColor};
+      props.isError
+         ? props.theme.errorColor
+         : props.color
+         ? props.color
+         : props.theme.lighterColor};
    font-size: ${props =>
       !!props.fontSize ? `${props.fontSize}px` : props.theme.defaultFontSize};
    font-weight: ${props => (props.bold ? '600' : '400')};
-   width: 'auto';
+   width: auto;
    margin: ${props => (props.bigMargin ? '20px 0 0 0' : '0px')};
    text-align: ${props => props.textAlign};
 `;

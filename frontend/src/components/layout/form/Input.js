@@ -4,16 +4,16 @@ import PropTypes from 'prop-types';
 import InlineMessage from '../../utils/InlineMessage';
 
 const InputStyles = styled.div`
-   margin-bottom: 10px;
-   width: 100%;
+   margin: ${props => props.margin};
+   width: ${props => props.width && props.width};
    :hover {
       cursor: text;
    }
    label {
-      width: ${props => (props.small ? '95%' : '100%')};
+      width: 100%;
       display: ${props => (props.label ? 'block' : 'none')};
-      font-size: 15px;
-      ${props => props.small && 'text-align: center'};
+      font-size: ${props => (props.small ? '13px' : '15px')};
+      ${props => props.centerLabel && 'text-align: center'};
       color: ${props =>
          props.error ? props.theme.errorColor : props.theme.lighterColor};
       font-weight: 500;
@@ -29,7 +29,7 @@ const InputStyles = styled.div`
       border: 1px solid
          ${props => (props.error ? props.theme.errorColor : props.theme.inputBorderColor)};
       border-radius: 4px;
-      width: ${props => (props.small ? '95%' : '100%')};
+      width: 100%;
       ${props => !props.textarea && (props.small ? 'height: 35px' : 'height: 50px')};
       ${props =>
          !props.textarea && (props.small ? 'line-height: 35px' : 'line-height: 55px')};
@@ -64,9 +64,6 @@ const InputStyles = styled.div`
    }
 `;
 
-//TODO - onClick na Inputa w testach focusuje imieINazwisko
-//TODO - textarea ma innego fonta
-
 class Input extends React.Component {
    constructor() {
       super();
@@ -82,7 +79,9 @@ class Input extends React.Component {
       textarea: false,
       small: false,
       rows: '4',
-      label: ''
+      label: '',
+      centerLabel: false,
+      margin: '0'
    };
    static propTypes = {
       type: PropTypes.string,
@@ -93,7 +92,10 @@ class Input extends React.Component {
       small: PropTypes.bool,
       disabled: PropTypes.bool,
       textarea: PropTypes.bool,
+      centerLabel: PropTypes.bool,
       label: PropTypes.string,
+      width: PropTypes.string,
+      margin: PropTypes.string,
       value: PropTypes.string.isRequired,
       onChange: PropTypes.func.isRequired,
       name: PropTypes.string.isRequired
@@ -116,7 +118,10 @@ class Input extends React.Component {
          error,
          disabled,
          textarea,
-         rows
+         rows,
+         width,
+         centerLabel,
+         margin
       } = this.props;
       return (
          <InputStyles
@@ -125,6 +130,9 @@ class Input extends React.Component {
             small={small}
             textarea={textarea}
             onClick={this.focus}
+            width={width}
+            centerLabel={centerLabel}
+            margin={margin}
          >
             <label htmlFor={name}>{label}</label>
             {!textarea ? (

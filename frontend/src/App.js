@@ -29,6 +29,7 @@ const GlobalStyle = createGlobalStyle`
       font-size: ${theme.defaultFontSize};
       margin: 0;
       padding: 0;
+      box-sizing: content-box;
       
    }
    ::selection {
@@ -55,7 +56,7 @@ class App extends Component {
             <ThemeProvider theme={theme}>
                <React.Fragment>
                   <GlobalStyle />
-                  {/*  <Header /> */}
+                  <Header />
                   <Route exact path="/" component={Landing} />
                   {/*<Footer />*/}
                </React.Fragment>

@@ -5,7 +5,7 @@ import Tooltip from '../../utils/Tooltip';
 import RoundedButton from './RoundedButton';
 
 const AddRemoveButtons = ({ zmienIloscWynikow, iloscWynikow }) => (
-   <RowWrapper style={{ transform: 'translateX(-10px)' }}>
+   <RowWrapper style={{ transform: 'translateX(-10px)', margin: '15px 0' }}>
       <Tooltip title={'Dodaj wiersz'} style={{ marginRight: '150px' }}>
          <RoundedButton onClick={zmienIloscWynikow('+')}>+</RoundedButton>
       </Tooltip>

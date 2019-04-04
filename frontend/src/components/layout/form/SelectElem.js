@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withTheme } from 'styled-components';
 import Select from 'react-select';
-import withContext from '../../../context/Context_HOC';
 import { addAlphaChannel } from '../../../utils/utils';
+import withContext from '../../../context/Context_HOC';
 
 class SelectElem extends Component {
    colourStyles = {
@@ -12,7 +12,6 @@ class SelectElem extends Component {
       input: (styles, { isDisabled, isFocused, isSelected }) => ({
          ...styles,
          width: this.props.context.isMobile ? '100%' : '100%',
-         borderColor: isSelected ? 'red' : 'orange',
          minHeight: '35px',
          lineHeight: '35px',
          color: this.props.theme.color,
@@ -21,7 +20,8 @@ class SelectElem extends Component {
       placeholder: styles => ({
          ...styles,
          color: this.props.theme.placeholderColor,
-         cursor: 'pointer'
+         cursor: 'pointer',
+         fontSize: this.props.context.isMobile && '15px'
       }),
       singleValue: styles => ({
          ...styles,
@@ -30,7 +30,6 @@ class SelectElem extends Component {
       })
    };
    render() {
-      //TODO - cos jest nie halo z wybieraniem opcji w selectcie, a szczegolnie z ich kasowaniem
       const {
          i,
          handleArgTypeChange,
@@ -48,12 +47,19 @@ class SelectElem extends Component {
             conditionalValue = args[i * 2 + 1];
          }
       } else {
-         if (args[i * 2 + 1] === null || args[i * 2] === undefined) {
+         if (args[i * 2] === null || args[i * 2] === undefined) {
             conditionalValue = '';
          } else {
             conditionalValue = args[i * 2];
          }
       }
+      const value = {
+         value: conditionalValue !== '' &&
+            conditionalValue !== null && {
+               value: conditionalValue,
+               label: conditionalValue
+            }
+      };
       return (
          <Select
             label={title}
@@ -73,12 +79,7 @@ class SelectElem extends Component {
             })}
             onChange={handleArgTypeChange(i)(secondColumn === true ? 1 : 0)(argsName)}
             isClearable
-            value={
-               conditionalValue !== '' && {
-                  value: conditionalValue,
-                  label: conditionalValue
-               }
-            }
+            {...value}
          />
       );
    }

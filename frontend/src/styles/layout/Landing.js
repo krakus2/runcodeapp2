@@ -14,11 +14,12 @@ export const MyPaper = styled.div`
    flex-direction: column;
    justify-content: center;
    background: #fff;
-   border: 1px solid #e0e4e7;
-   border-radius: 4px;
+   ${props =>
+      props.isMobile ? 'border-top: 1px solid #e0e4e7' : 'border: 1px solid #e0e4e7'};
+   ${props => !props.isMobile && 'border-radius: 4px'};
    margin: ${props => (props.isMobile ? '20px auto 0 auto' : '20px 10px')};
-   padding: ${props => (props.isMobile ? '10px' : '45px 63px')};
-   width: ${props => (props.isMobile ? '100vw' : '550px')};
+   padding: ${props => (props.isMobile ? '10px 10px 20px 10px' : '45px 60px')};
+   width: ${props => !props.isMobile && '550px'};
 `;
 
 export const Form = styled.form`
@@ -32,7 +33,6 @@ export const EditorWrapper = styled.div`
 `;
 
 //TODO - wywalic to do wlasnego komponentu
-/*    ${props => !props.error && 'padding-bottom: 19px'}; */
 export const ButtonWrapper = styled.div`
    display: flex;
    flex-direction: row;
@@ -115,9 +115,6 @@ export const RowWrapper = styled.div`
    position: relative;
    width: 100%;
    margin-left: ${props => (props.leftMargin ? props.theme.defaultSpacing : '0px')};
-   ${props => props.topMargin30 && 'margin-top: -20px'};
-   ${props => props.topMargin40 && 'margin-top: -25px'};
-   ${props => props.topMargin15 && 'margin-top: -15px'};
 `;
 
 export const GridWrapper = styled.div`
@@ -126,6 +123,7 @@ export const GridWrapper = styled.div`
       props.isMobile ? 'repeat(auto-fill, 70px)' : props.grid};
    grid-auto-rows: auto;
    grid-column-gap: 20px;
+   margin-top: 10px;
 `;
 
 export const Span = styled.span`

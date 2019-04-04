@@ -68,8 +68,6 @@ const SwitchStyles = styled.div`
    }
 `;
 
-//TODO - przerobic sposob nadawania koloru, na korzystanie z theme
-
 const Switch = ({ text, color, value, onChange }) => (
    <SwitchStyles color={color}>
       <input

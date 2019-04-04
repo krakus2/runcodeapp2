@@ -19,15 +19,15 @@ const ArrayMarkers = styled.div`
       content: '[';
       font-size: 37px;
       left: -11px;
-      top: 15px;
+      top: 12px;
    }
 
    &::after {
       position: absolute;
       font-size: 37px;
       content: ']';
-      left: 69px;
-      top: 15px;
+      left: 71px;
+      top: 12px;
    }
 `;
 
@@ -40,14 +40,17 @@ class Testy extends Component {
       return array.join(' ');
    };
 
-   generateLabel = (i, iloscArg) => {
+   generateLabelAndName = (i, iloscArg) => {
       const object = {};
       if (i === 0 && iloscArg === 0) {
          object.label = 'Wynik';
+         object.name = `Wynik${i}`;
       } else if ((i + 1) % (iloscArg + 1) === 0 && i !== 0) {
          object.label = 'Wynik';
+         object.name = `Wynik${i}`;
       } else {
          object.label = `Arg ${(i % (iloscArg + 1)) + 1}`;
+         object.name = `Arg ${(i % (iloscArg + 1)) + 1}`;
       }
       return object;
    };
@@ -70,11 +73,12 @@ class Testy extends Component {
                <Tooltip key={i} title="Wartości tablicy oddziel przecinkami">
                   <ArrayMarkers key={i}>
                      <Input
-                        {...this.generateLabel(i, iloscArg)}
-                        name={'imieINazwisko'}
+                        {...this.generateLabelAndName(i, iloscArg)}
                         value={wyniki[i] != undefined ? wyniki[i] : ''}
                         onChange={handleWynikiChange(i)}
-                        small={true}
+                        small
+                        centerLabel
+                        width="100%"
                      />
                   </ArrayMarkers>
                </Tooltip>
@@ -83,11 +87,12 @@ class Testy extends Component {
             fieldsArray.push(
                <div key={i}>
                   <Input
-                     {...this.generateLabel(i, iloscArg)}
-                     name={'imieINazwisko'}
+                     {...this.generateLabelAndName(i, iloscArg)}
                      value={wyniki[i] != undefined ? wyniki[i] : ''}
                      onChange={handleWynikiChange(i)}
-                     small={true}
+                     small
+                     centerLabel
+                     width="100%"
                   />
                </div>
             );
