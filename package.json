@@ -8,7 +8,8 @@
       "server": "npm run server --prefix backend\"",
       "server-forever": "npm run server-forever --prefix backend",
       "client": "npm start --prefix frontend",
-      "client-install": "npm --prefix ../frontend/node_modules install ../frontend",
+      "client-install": "npm --prefix ./frontend/node_modules install ./frontend",
+      "backend-install": "npm --prefix ./backend/node_modules install ./backend",
       "dev": "concurrently \"npm run server\" \"npm run client\"",
       "prod": "concurrently \"npm run build --prefix frontend\" \"npm run server\"",
       "delete": "npm run delete --prefix backend",
@@ -19,8 +20,6 @@
    "author": "Filip Krakowiak",
    "license": "ISC",
    "dependencies": {
-      "concurrently": "^4.1.0",
-      "grommet-icons": "^4.2.0",
-      "styled-components": "^4.2.0"
+      "concurrently": "^4.1.0"
    }
 }

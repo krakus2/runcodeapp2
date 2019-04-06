@@ -31,8 +31,13 @@ export class ContextProvider extends Component {
         this.setState({ code: newValue });
     };*/
    componentDidMount() {
-      this.updateWindowDimensions();
-      window.addEventListener('resize', this.updateWindowDimensions);
+      console.log(window.innerWidth);
+      if (window.innerWidth < 900) {
+         console.log(true);
+         this.setState({ isMobile: 'chuj' }, () => console.log('czemu nie dziala'));
+      }
+      this.updateWindowDimensions(true)();
+      window.addEventListener('resize', this.updateWindowDimensions(false));
    }
 
    componentDidUpdate() {
@@ -46,12 +51,19 @@ export class ContextProvider extends Component {
       return true;
    }
 
-   updateWindowDimensions = () => {
+   updateWindowDimensions = first => deets => {
       let isMobile = false;
-      if (/iPhone|Android/i.test(navigator.userAgent)) {
-         isMobile = true;
+      if (first) {
+         if (/iPhone|Android/i.test(navigator.userAgent)) {
+            isMobile = true;
+         }
+         this.setState({ isMobile });
+      } else {
+         if (/iPhone|Android/i.test(navigator.userAgent) || deets.currentTarget.innerWidth < 900) {
+            isMobile = true;
+         }
+         this.setState({ isMobile });
       }
-      this.setState({ isMobile });
    };
 
    componentWillUnmount() {

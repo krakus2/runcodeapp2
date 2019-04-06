@@ -31,6 +31,10 @@
       "not op_mini all"
    ],
    "devDependencies": {
-      "react-app-rewired": "^2.1.1"
+      "enzyme": "^3.9.0",
+      "enzyme-adapter-react-16": "^1.11.2",
+      "enzyme-to-json": "^3.3.5",
+      "react-app-rewired": "^2.1.1",
+      "sinon": "^7.3.1"
    }
 }

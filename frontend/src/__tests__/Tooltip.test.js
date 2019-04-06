@@ -1,8 +1,13 @@
 import Tooltip from '../components/utils/Tooltip';
-import Enzyme, { shallow, render, mount } from 'enzyme';
+const AppContext = React.createContext();
 
+jest.mock('../context/Context_HOC'),
+   () => ({
+      context: () => {
+         isMobile: false;
+      }
+   });
 it('renders correctly', () => {
-   console.log(global.xd);
-   const wrapper = shallow(<Tooltip title="Tooltip" />);
+   const wrapper = render(<Tooltip title="Tooltip" />);
    expect(wrapper).toMatchSnapshot();
 });

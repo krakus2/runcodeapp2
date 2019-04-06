@@ -105,7 +105,7 @@ const TooltipStyle = styled.div`
 
 `;
 
-const Tooltip = ({ children, title, width, context }) => (
+const Tooltip = ({ children, title, context }) => (
    <TooltipStyle title={title} isMobile={context.isMobile}>
       {children}
    </TooltipStyle>

@@ -42,7 +42,7 @@ class Header extends Component {
       const { context } = this.props;
       const { email, emailErr, loginErr, password, passwordErr } = this.state;
       return (
-         <MyAppBar /*position="static" color="secondary"*/>
+         <MyAppBar>
             <HeaderWrapper isMobile={context.isMobile}>
                <Title isMobile={context.isMobile}>RUNCODE</Title>
                <FormWrapper
