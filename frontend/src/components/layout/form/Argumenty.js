@@ -1,6 +1,6 @@
 import React from 'react';
 import MySlider from './MySlider';
-import { SelectWrapper } from '../../../styles/layout/Landing';
+import { SelectWrapper } from '../../../styles/Form';
 import SelectElem from './SelectElem';
 
 export default function Argumenty({

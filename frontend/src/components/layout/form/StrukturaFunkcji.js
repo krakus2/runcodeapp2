@@ -1,5 +1,5 @@
 import React from 'react';
-import { RowWrapper, Span } from '../../../styles/layout/Landing';
+import { RowWrapper, Span } from '../../../styles/Form';
 
 export default function StrukturaFunkcji({
    nazwaFunkcji,

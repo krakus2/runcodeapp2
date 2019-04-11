@@ -1,15 +1,16 @@
 import React, { lazy, Suspense } from 'react';
 import withContext from '../../../context/Context_HOC';
-import { RowWrapper, EditorWrapper } from '../../../styles/layout/Landing.js';
+import { RowWrapper, EditorWrapper } from '../../../styles/Form.js';
+//import isMobile from '../../../utils/utils';
 const MonacoEditor = lazy(() => import('react-monaco-editor'));
 
 export default withContext(function({ code, onEditorChange, context }) {
    const options = {
       selectOnLineNumbers: true
    };
-
+   /* TODO - rozwiazanie z podaniem window.innerWidth nie jest dynamiczne, wiec podaje hard coded value*/
    const props = {
-      width: context.isMobile ? '330' : ''
+      width: context.isMobile ? 370 : ''
    };
    return (
       <Suspense

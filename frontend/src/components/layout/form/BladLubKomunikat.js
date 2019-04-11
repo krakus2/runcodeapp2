@@ -1,5 +1,5 @@
 import React from 'react';
-import InlineMessage from '../../utils/InlineMessage';
+import InlineMessage from '../../reusable/InlineMessage';
 import { withTheme } from 'styled-components';
 
 function BladLubKomunikat({ error, postSuccess, theme }) {

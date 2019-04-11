@@ -4,7 +4,9 @@ import { ThemeProvider, createGlobalStyle } from 'styled-components';
 
 import Header from './components/layout/Header';
 //import Footer from "./components/layout/Footer";
-import Landing from './components/layout/Landing';
+import Form from './components/pages/Form';
+import Tasks from './components/pages/Tasks';
+import Task from './components/pages/Task';
 
 const theme = {
    primaryColor: '#009688',
@@ -14,6 +16,7 @@ const theme = {
    defaultSpacing: '8px',
    defaultFontSize: '16px',
    color: 'rgba(0, 0, 0, 0.87)',
+   backgroundColor: '#f7f7f8',
    lighterColor: 'rgba(0, 0, 0, 0.7)',
    placeholderColor: 'rgba(0, 0, 0, 0.4)',
    inputBorderColor: 'rgba(0, 0, 0, 0.3)',
@@ -24,24 +27,23 @@ const theme = {
 
 const GlobalStyle = createGlobalStyle`
    html, body {
-      width: 100%;
       font-family: Roboto;
       font-size: ${theme.defaultFontSize};
       margin: 0;
       padding: 0;
       box-sizing: content-box;
-      
    }
    ::selection {
       background: ${theme.primaryColor};
       color: white;
    }
    h3{
+      font-size: 1.3rem;
       font-weight: 500;
       margin: 5px 0;
    }
    p{
-      font-size: 14px;
+      font-size: 0.875rem;
       font-weight: 400;
       margin: 0;
       color: ${theme.lighterColor};
@@ -57,7 +59,9 @@ class App extends Component {
                <React.Fragment>
                   <GlobalStyle />
                   <Header />
-                  <Route exact path="/" component={Landing} />
+                  <Route exact path="/" component={Form} />
+                  <Route exact path="/tasks" component={Tasks} />
+                  <Route exact path="/task" component={Task} />
                   {/*<Footer />*/}
                </React.Fragment>
             </ThemeProvider>

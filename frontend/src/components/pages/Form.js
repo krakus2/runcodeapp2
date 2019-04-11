@@ -2,18 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import withContext from '../../context/Context_HOC';
-import PolaTekstowe from './form/PolaTekstowe';
-import Argumenty from './form/Argumenty';
-import TypZwracany from './form/TypZwracany';
-import SubmitButton from './form/SubmitButton';
-import StrukturaFunkcji from './form/StrukturaFunkcji';
-import Testy from './form/Testy';
-import Editor from './form/Editor';
-import Rekurencja from './form/Rekurencja';
-import BladLubKomunikat from './form/BladLubKomunikat';
-import { Form, Wrapper, MyPaper } from '../../styles/layout/Landing';
+import PolaTekstowe from '../layout/form/PolaTekstowe';
+import Argumenty from '../layout/form/Argumenty';
+import TypZwracany from '../layout/form/TypZwracany';
+import SubmitButton from '../layout/form/SubmitButton';
+import StrukturaFunkcji from '../layout/form/StrukturaFunkcji';
+import Testy from '../layout/form/Testy';
+import Editor from '../layout/form/Editor';
+import Rekurencja from '../layout/form/Rekurencja';
+import BladLubKomunikat from '../layout/form/BladLubKomunikat';
+import { Form, MyPaper, Wrapper } from '../../styles/Form';
 
-//TODO - dodac ikonke i tytul, ktore sie beda wyswietlac na karcie w chrome
 class Landing extends Component {
    constructor(props) {
       super(props);

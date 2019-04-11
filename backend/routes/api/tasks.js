@@ -3,6 +3,8 @@ const router = express.Router();
 const validateProfileInput = require('../../validators/task');
 const tasksRouteUtils = require('../../utils/tasksRouteUtils');
 const TaskService = require('../../models/index');
+const db = require('../../startup/sqldb');
+
 const {
    createTask,
    listTasks,
@@ -22,7 +24,37 @@ router.get('/test', (req, res) => {
    });
 });
 
-// @route   GET api/tasks/
+// @route   GET api/tasks/tests
+// @desc    get tests from sql database
+// @access  Public
+router.get('/tests', (req, res) => {
+   const result = {};
+   console.log(result['x']);
+   db.query('SELECT * FROM `task_submit`', function(error, results, fields) {
+      results.forEach((elem, i) => {
+         if (result[elem.id_task] === undefined) {
+            result[elem.id_task] = [];
+            result[elem.id_task].push(elem);
+         } else {
+            result[elem.id_task].push(elem);
+         }
+      });
+      return res.json(result);
+   });
+});
+
+router.get('/tests/:id', (req, res) => {
+   const { id } = req.params;
+   db.query(`SELECT * FROM \`task_submit\` WHERE id=${id}`, function(
+      error,
+      results,
+      fields
+   ) {
+      return res.json(results);
+   });
+});
+
+// @route   GET api/tasks/all
 // @desc    Get all tasks
 // @access  Public
 router.get('/all', async (req, res) => {

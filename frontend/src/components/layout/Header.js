@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withContext from '../../context/Context_HOC';
 import { validateEmail } from '../../utils/utils.js';
-import Input from './form/Input';
-import { HeaderWrapper, FormWrapper, MyAppBar, Title } from '../../styles/layout/Header';
-import InlineMessage from '../utils/InlineMessage';
-import Button, { ButtonStyles } from './form/Button';
+import Input from '../reusable/Input';
+import { HeaderWrapper, FormWrapper, MyAppBar, Title } from '../../styles/Header';
+import InlineMessage from '../reusable/InlineMessage';
+import Button from '../reusable/Button';
 
 class Header extends Component {
    state = {
@@ -44,7 +44,9 @@ class Header extends Component {
       return (
          <MyAppBar>
             <HeaderWrapper isMobile={context.isMobile}>
-               <Title isMobile={context.isMobile}>RUNCODE</Title>
+               <Title isMobile={context.isMobile}>
+                  <a href="/"> RUNCODE</a>
+               </Title>
                <FormWrapper
                   error={emailErr || passwordErr || loginErr}
                   onSubmit={this.onSubmit}

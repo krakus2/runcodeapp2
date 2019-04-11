@@ -1,8 +1,8 @@
 import React, { lazy, Suspense } from 'react';
 import PropTypes from 'prop-types';
-import { RowWrapper } from '../../../styles/layout/Landing';
-import Tooltip from '../../utils/Tooltip';
-import RoundedButton from './RoundedButton';
+import { RowWrapper } from '../../../styles/Form';
+import Tooltip from '../../reusable/Tooltip';
+import RoundedButton from '../../reusable/RoundedButton';
 
 const AddRemoveButtons = ({ zmienIloscWynikow, iloscWynikow }) => (
    <RowWrapper style={{ transform: 'translateX(-10px)', margin: '15px 0' }}>

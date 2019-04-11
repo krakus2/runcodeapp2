@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import withContext from '../../../context/Context_HOC';
 import AddRemoveButtons from './AddRemoveButtons';
-import { GridWrapper, RowWrapper } from '../../../styles/layout/Landing';
-import Tooltip from '../../utils/Tooltip';
-import Input from './Input';
+import { GridWrapper, RowWrapper } from '../../../styles/Form';
+import Tooltip from '../../reusable/Tooltip';
+import Input from '../../reusable/Input';
 
 const ArrayMarkers = styled.div`
    display: flex;

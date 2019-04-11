@@ -1,6 +1,6 @@
 import React from 'react';
-import { RowWrapper } from '../../../styles/layout/Landing.js';
-import Switch from '../../utils/Switch';
+import { RowWrapper } from '../../../styles/Form.js';
+import Switch from '../../reusable/Switch';
 
 export default function Rekurencja({ czyRekurencja, handleSwitchChange, color }) {
    return (

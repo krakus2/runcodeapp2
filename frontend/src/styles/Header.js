@@ -31,4 +31,8 @@ export const Title = styled.div`
    font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
    font-weight: 700;
    text-transform: uppercase;
+   a {
+      color: ${props => props.theme.color};
+      text-decoration: none;
+   }
 `;

@@ -8,7 +8,8 @@ export class ContextProvider extends Component {
    constructor() {
       super();
       this.state = {
-         isMobile: false
+         isMobile: false,
+         task_tests: []
          /*imieINazwisko: "",
             nazwaFunkcji: "",
             tytulZadania: "",
@@ -30,11 +31,15 @@ export class ContextProvider extends Component {
     onEditorChange = (newValue, e) => {
         this.setState({ code: newValue });
     };*/
+
+   addTask = task_tests => {
+      console.log('dodawanie task_tests', task_tests);
+      this.setState({ task_tests: 'no elo' });
+   };
+
    componentDidMount() {
-      console.log(window.innerWidth);
       if (window.innerWidth < 900) {
-         console.log(true);
-         this.setState({ isMobile: 'chuj' }, () => console.log('czemu nie dziala'));
+         this.setState({ isMobile: true });
       }
       this.updateWindowDimensions(true)();
       window.addEventListener('resize', this.updateWindowDimensions(false));
@@ -52,17 +57,19 @@ export class ContextProvider extends Component {
    }
 
    updateWindowDimensions = first => deets => {
-      let isMobile = false;
-      if (first) {
-         if (/iPhone|Android/i.test(navigator.userAgent)) {
-            isMobile = true;
+      if (!first) {
+         if (
+            /iPhone|Android/i.test(navigator.userAgent) ||
+            deets.currentTarget.innerWidth < 900
+         ) {
+            this.setState({ isMobile: true });
+         } else {
+            this.setState({ isMobile: false });
          }
-         this.setState({ isMobile });
       } else {
-         if (/iPhone|Android/i.test(navigator.userAgent) || deets.currentTarget.innerWidth < 900) {
-            isMobile = true;
+         if (/iPhone|Android/i.test(navigator.userAgent)) {
+            this.setState({ isMobile: true });
          }
-         this.setState({ isMobile });
       }
    };
 
@@ -74,9 +81,9 @@ export class ContextProvider extends Component {
       return (
          <AppContext.Provider
             value={{
-               ...this.state
+               ...this.state,
+               addTask: this.addTask
                //handleTextInputChange: this.handleTextInputChange,
-               //onEditorChange: this.onEditorChange
             }}
          >
             {this.props.children}

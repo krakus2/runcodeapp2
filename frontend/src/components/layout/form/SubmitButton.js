@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Tooltip from '../../utils/Tooltip';
-import Button from './Button';
-import { ButtonWrapper } from '../../../styles/layout/Landing';
+import Tooltip from '../../reusable/Tooltip';
+import Button from '../../reusable/Button';
+import { ButtonWrapper } from '../../../styles/Form';
 import withContext from '../../../context/Context_HOC';
 
 const Submit = ({ isInvalid, loading, onSubmitClick, context }) => (

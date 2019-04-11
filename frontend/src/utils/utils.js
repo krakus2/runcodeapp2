@@ -3,7 +3,7 @@ export const validateEmail = email => {
    return re.test(email);
 };
 
-const hexToRgb = hex =>
+export const hexToRgb = hex =>
    hex
       .replace(
          /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
@@ -14,3 +14,11 @@ const hexToRgb = hex =>
       .map(x => parseInt(x, 16));
 
 export const addAlphaChannel = (color, a) => `rgba(${hexToRgb(color).join(', ')}, ${a})`;
+
+export const isMobile = () => {
+   if (/iPhone|Android/i.test(navigator.userAgent) || window.innerWidth < 900) {
+      return true;
+   } else {
+      return false;
+   }
+};

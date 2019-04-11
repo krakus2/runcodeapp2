@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { addAlphaChannel } from '../../utils/utils';
+import { addAlphaChannel } from '../utils/utils';
 
 export const Wrapper = styled.main`
    font-size: 18px;

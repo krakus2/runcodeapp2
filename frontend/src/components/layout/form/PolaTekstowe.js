@@ -1,7 +1,7 @@
 import React from 'react';
 import { withTheme } from 'styled-components';
-import Input from './Input';
-import { RowWrapper } from '../../../styles/layout/Landing';
+import Input from '../../reusable/Input';
+import { RowWrapper } from '../../../styles/Form';
 
 const PolaTekstowe = ({
    error,

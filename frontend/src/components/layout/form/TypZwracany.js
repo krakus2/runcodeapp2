@@ -1,5 +1,5 @@
 import React from 'react';
-import { SelectWrapper, RowWrapper } from '../../../styles/layout/Landing';
+import { SelectWrapper, RowWrapper } from '../../../styles/Form';
 import SelectElem from './SelectElem';
 
 export default function TypZwracany({ handleArgTypeChange, returnArgs }) {

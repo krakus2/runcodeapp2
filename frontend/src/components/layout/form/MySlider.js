@@ -4,7 +4,7 @@ import { withTheme } from 'styled-components';
 import Slider, { createSliderWithTooltip } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-import { SliderWrapper } from '../../../styles/layout/Landing';
+import { SliderWrapper } from '../../../styles/Form';
 
 const SliderWithTooltip = createSliderWithTooltip(Slider);
 
