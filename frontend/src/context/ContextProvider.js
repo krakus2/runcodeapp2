@@ -34,7 +34,7 @@ export class ContextProvider extends Component {
 
    addTask = task_tests => {
       console.log('dodawanie task_tests', task_tests);
-      this.setState({ task_tests: 'no elo' });
+      this.setState({ task_tests });
    };
 
    componentDidMount() {
@@ -91,17 +91,3 @@ export class ContextProvider extends Component {
       );
    }
 }
-
-// This function takes a component...
-/*export function withContext(Component) {
-    // ...and returns another component...
-    return function ContextComponent(props) {
-        // ... and renders the wrapped component with the context theme!
-        // Notice that we pass through any additional props as well
-        return (
-            <MyContext.Consumer>
-                {context => <Component {...props} context={context} />}
-            </MyContext.Consumer>
-        );
-    };
-}*/

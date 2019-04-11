@@ -3,20 +3,16 @@ import styled, { keyframes } from 'styled-components';
 import PropTypes from 'prop-types';
 import withContext from '../../context/Context_HOC';
 
-const beforeSlideIn = isMobile => {
-   if (!isMobile) {
-      return keyframes`
-         from {
-            transform: translateX(-70%);
-            background-color: rgba(0, 0, 0, 0);
-         }
-         to {
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.8);
-         }
-      `;
+const beforeSlideIn = keyframes`
+   from {
+      transform: translateX(-70%);
+      background-color: rgba(0, 0, 0, 0);
    }
-};
+   to {
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.8);
+   }
+`;
 
 /* const beforeSlideIn = keyframes`
   from {
@@ -29,37 +25,35 @@ const beforeSlideIn = isMobile => {
   }
 `; */
 
-const afterSlide = isMobile => {
-   if (!isMobile) {
-      return keyframes`
-         from {
-            transform: translateX(-300%);
-            border-top-color: rgba(0, 0, 0, 0);
-         }
-         to {
-            transform: translateX(0);
-            border-top-color: rgba(0, 0, 0, 0.8);
-         }
-      `;
+const afterSlide = keyframes`
+   from {
+      transform: translateX(-300%);
+      border-top-color: rgba(0, 0, 0, 0);
    }
-};
+   to {
+      transform: translateX(0);
+      border-top-color: rgba(0, 0, 0, 0.8);
+   }
+`;
 
 const TooltipStyle = styled.div`
+   @media (hover) {
    /* The element is positioned relative to its normal position */
    position: relative;
    text-align: center;
-   &:hover {
-      &::after{
-         ${props => !props.isMobile && 'display: block'};
-         ${props => !props.isMobile && 'border-top-color: rgba(0, 0, 0, 0.8)'}; 
-         animation: ${props => afterSlide(props.isMobile)} 0.25s ease-out; 
+      &:hover {
+         &::after {
+         display: block;
+         border-top-color: rgba(0, 0, 0, 0.8);
+         animation: ${afterSlide} 0.25s ease-out; 
       }
-      &::before {
-         ${props => !props.isMobile && 'display: block'};
-         ${props => !props.isMobile && 'background-color: rgba(0, 0, 0, 0.8)'}; 
-         animation: ${props => beforeSlideIn(props.isMobile)} 0.3s ease-out;  
+         &::before {
+            display: block;
+            background-color: rgba(0, 0, 0, 0.8);
+            animation: ${beforeSlideIn} 0.3s ease-out;  
+         }
       }
-   }
+   
    &::before {
       /* The element is positioned relative to its first positioned (not static) ancestor element */
       position: absolute;
@@ -68,10 +62,10 @@ const TooltipStyle = styled.div`
       transform: translateX(-50%);
       white-space: pre;
       padding: 0 10px;
-      height: ${props => (props.isMobile ? '20px' : '30px')};
-      line-height: ${props => (props.isMobile ? '20px' : '30px')};
+      height: 30px;
+      line-height: 30px;
       content: '${props => props.title}';
-      font-size: ${props => (props.isMobile ? '10px' : '14px')};
+      font-size: 14px;
       font-weight: 500;
       border-radius: 4px;
       color: white;
@@ -102,13 +96,11 @@ const TooltipStyle = styled.div`
       pointer-events: none;
       will-change: transform;
    }
-
+}
 `;
 
-const Tooltip = ({ children, title, context }) => (
-   <TooltipStyle title={title} isMobile={context.isMobile}>
-      {children}
-   </TooltipStyle>
+const Tooltip = ({ children, title }) => (
+   <TooltipStyle title={title}>{children}</TooltipStyle>
 );
 
 Tooltip.propTypes = {

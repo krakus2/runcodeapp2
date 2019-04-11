@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import withContext from '../../context/Context_HOC';
 
-import { Wrapper } from '../../styles/Form';
+import { Wrapper } from '../../styles/Tasks';
 
 class Task extends Component {
    state = {};
@@ -12,7 +12,11 @@ class Task extends Component {
    }
 
    render() {
-      return <Wrapper>xd</Wrapper>;
+      return (
+         <Wrapper>
+            <h3>Statystyki zadania</h3>
+         </Wrapper>
+      );
    }
 }
 

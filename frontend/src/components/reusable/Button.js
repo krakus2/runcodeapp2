@@ -23,8 +23,10 @@ export const ButtonStyles = styled.button`
    font-weight: 500;
    padding: 0 30px;
    height: ${props => props.height};
-   ${props => !props.isMobile && 'position: relative'};
-   top: ${props => !props.isMobile && props.top};
+   @media (min-width: 900px) {
+      position: relative;
+      top: ${props => props.top};
+   }
    margin: ${props => props.margin};
    border-radius: 4px;
 
@@ -50,7 +52,7 @@ export const ButtonStyles = styled.button`
    }
    :hover {
       ${props => !props.disabled && 'color: white'};
-      border-color: ${props => props.theme.primaryColor};
+      border-color: ${props => !props.disabled && props.theme.primaryColor};
       cursor: pointer;
       :before {
          content: '';
