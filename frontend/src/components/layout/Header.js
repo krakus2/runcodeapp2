@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withTheme } from 'styled-components';
 import withContext from '../../context/Context_HOC';
 import { validateEmail } from '../../utils/utils.js';
 import Input from '../reusable/Input';
-import { HeaderWrapper, FormWrapper, MyAppBar, Title } from '../../styles/Header';
+import { HeaderWrapper, FormWrapper, MyAppBar, Links } from '../../styles/Header';
 import InlineMessage from '../reusable/InlineMessage';
 import Button from '../reusable/Button';
 
@@ -44,9 +45,14 @@ class Header extends Component {
       return (
          <MyAppBar>
             <HeaderWrapper isMobile={context.isMobile}>
-               <Title isMobile={context.isMobile}>
-                  <a href="/"> RUNCODE</a>
-               </Title>
+               <Links isMobile={context.isMobile}>
+                  <a href="/" className="links__runcode">
+                     RUNCODE
+                  </a>
+                  <a href="/tasks" className="links__tasks">
+                     TASKS
+                  </a>
+               </Links>
                <FormWrapper
                   error={emailErr || passwordErr || loginErr}
                   onSubmit={this.onSubmit}
@@ -104,4 +110,4 @@ class Header extends Component {
 
 Header.propTypes = {};
 
-export default withContext(Header);
+export default withTheme(withContext(Header));

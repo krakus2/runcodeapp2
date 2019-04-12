@@ -15,8 +15,15 @@ export default withContext(function({ code, onEditorChange, context }) {
    return (
       <Suspense
          fallback={
-            <div style={{ textAlign: 'center', fontSize: '24px', fontWeight: '700' }}>
-               Code Editor is Loading...
+            <div
+               style={{
+                  textAlign: 'center',
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  margin: '20px 0'
+               }}
+            >
+               Edytor kodu się ładuje...
             </div>
          }
       >

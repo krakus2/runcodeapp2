@@ -22,8 +22,9 @@ export const MyAppBar = styled.header`
    padding: 0 50px;
 `;
 
-export const Title = styled.div`
+export const Links = styled.div`
    display: flex;
+   ${props => props.isMobile && 'flex-direction: column'};
    ${props => (!props.isMobile ? 'align-items: center' : 'justify-content: center')};
    ${props => props.isMobile && 'text-align: center'};
    ${props => (!props.isMobile ? '0' : 'margin: 30px 0')};
@@ -32,7 +33,30 @@ export const Title = styled.div`
    font-weight: 700;
    text-transform: uppercase;
    a {
-      color: ${props => props.theme.color};
       text-decoration: none;
+   }
+   .links__tasks {
+      color: ${props => props.theme.primaryColor};
+   }
+
+   .links__runcode {
+      color: ${props => props.theme.color};
+      @media (min-width: 901px) {
+         margin-right: 30px;
+      }
+      @media (max-width: 900px) {
+         margin-bottom: 5px;
+      }
+   }
+
+   @media (min-width: 901px) {
+      a:first-child {
+         :after {
+            content: '|';
+            margin-left: 30px;
+            position: relative;
+            top: -1px;
+         }
+      }
    }
 `;

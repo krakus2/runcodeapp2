@@ -9,7 +9,7 @@ export class ContextProvider extends Component {
       super();
       this.state = {
          isMobile: false,
-         task_tests: []
+         taskTests: []
          /*imieINazwisko: "",
             nazwaFunkcji: "",
             tytulZadania: "",
@@ -32,9 +32,8 @@ export class ContextProvider extends Component {
         this.setState({ code: newValue });
     };*/
 
-   addTask = task_tests => {
-      console.log('dodawanie task_tests', task_tests);
-      this.setState({ task_tests });
+   addTask = taskTests => {
+      this.setState({ taskTests });
    };
 
    componentDidMount() {
@@ -50,7 +49,10 @@ export class ContextProvider extends Component {
    }
 
    shouldComponentUpdate(nextProps, nextState) {
-      if (nextState.isMobile === this.state.isMobile) {
+      if (
+         nextState.isMobile === this.state.isMobile &&
+         nextState.taskTests[0] === this.state.taskTests[0]
+      ) {
          return false;
       }
       return true;

@@ -43,15 +43,24 @@ router.get('/tests', (req, res) => {
    });
 });
 
-router.get('/tests/:id', (req, res) => {
-   const { id } = req.params;
-   db.query(`SELECT * FROM \`task_submit\` WHERE id=${id}`, function(
-      error,
-      results,
-      fields
-   ) {
-      return res.json(results);
-   });
+router.get('/tests/task_id=:id&test_date=:date', (req, res) => {
+   const { id, date } = req.params;
+   if (date !== 'all') {
+      db.query(
+         `SELECT * FROM \`task_submit\` WHERE id_task=${id} AND date_uploaded >= '${date}'`,
+         function(error, results, fields) {
+            return res.json(results);
+         }
+      );
+   } else {
+      db.query(`SELECT * FROM \`task_submit\` WHERE id_task=${id}`, function(
+         error,
+         results,
+         fields
+      ) {
+         return res.json(results);
+      });
+   }
 });
 
 // @route   GET api/tasks/all

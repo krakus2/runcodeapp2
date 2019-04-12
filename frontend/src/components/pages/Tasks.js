@@ -17,11 +17,11 @@ class Tasks extends Component {
       this.setState({ tasks: res.data });
    }
 
-   onTaskClick = (task, id_task) => async () => {
+   onTaskClick = (task, task_id) => async () => {
       //const res = await axios.get(`/api/tasks/tests/${id}`);
-      console.log(task, id_task);
+      console.log(task, task_id);
       this.props.context.addTask(task);
-      this.props.history.push(`/task?id_task=${id_task}`);
+      this.props.history.push(`/task?task_id=${task_id}`);
    };
    render() {
       const { tasks } = this.state;
@@ -30,9 +30,9 @@ class Tasks extends Component {
          <Wrapper isMobile={context.isMobile}>
             <h3>Lista dodanych zadań</h3>
             <ul>
-               {Object.keys(tasks).map(id_task => (
-                  <Line key={id_task} onClick={this.onTaskClick(tasks[id_task], id_task)}>
-                     ID Zadania - {id_task}
+               {Object.keys(tasks).map(task_id => (
+                  <Line key={task_id} onClick={this.onTaskClick(tasks[task_id], task_id)}>
+                     ID Zadania - {task_id}
                   </Line>
                ))}
             </ul>

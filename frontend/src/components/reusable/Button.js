@@ -93,8 +93,7 @@ class Button extends React.Component {
          height,
          fontSize,
          top,
-         margin,
-         isMobile
+         margin
       } = this.props;
       return (
          <ButtonStyles
@@ -108,7 +107,6 @@ class Button extends React.Component {
             fontSize={fontSize}
             top={top}
             margin={margin}
-            isMobile={isMobile}
          >
             {children}
          </ButtonStyles>
@@ -122,8 +120,7 @@ Button.defaultProps = {
    height: '48px',
    fontSize: '20px',
    top: '0',
-   margin: '0',
-   isMobile: false
+   margin: '0'
 };
 Button.propTypes = {
    type: PropTypes.string,
@@ -132,8 +129,7 @@ Button.propTypes = {
    height: PropTypes.string,
    fontSize: PropTypes.string,
    top: PropTypes.string,
-   margin: PropTypes.string,
-   isMobile: PropTypes.bool
+   margin: PropTypes.string
 };
 
 export default Button;

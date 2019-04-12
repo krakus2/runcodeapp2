@@ -3,7 +3,10 @@
    "version": "0.1.0",
    "private": true,
    "dependencies": {
+      "@nivo/line": "^0.55.0",
+      "@nivo/pie": "^0.55.0",
       "axios": "^0.18.0",
+      "axios-cache-adapter": "^2.3.0",
       "history": "^4.9.0",
       "monaco-editor-webpack-plugin": "^1.7.0",
       "rc-slider": "^8.6.7",
@@ -13,6 +16,7 @@
       "react-router-dom": "^5.0.0",
       "react-scripts": "2.1.8",
       "react-select": "^2.4.2",
+      "recharts": "^1.5.0",
       "styled-components": "^4.2.0"
    },
    "scripts": {
