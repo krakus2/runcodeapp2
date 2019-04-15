@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 import { addAlphaChannel } from '../utils/utils';
+import { device } from './breakpoints';
 
 export const Wrapper = styled.main`
-   font-size: 18px;
    display: flex;
    flex-direction: column;
    align-items: center;
-   background-color: #f7f7f8;
+   background-color: ${props => props.theme.backgroundColor};
 `;
 
 export const MyPaper = styled.div`
@@ -14,12 +14,18 @@ export const MyPaper = styled.div`
    flex-direction: column;
    justify-content: center;
    background: #fff;
-   ${props =>
-      props.isMobile ? 'border-top: 1px solid #e0e4e7' : 'border: 1px solid #e0e4e7'};
-   ${props => !props.isMobile && 'border-radius: 4px'};
-   margin: ${props => (props.isMobile ? '20px auto 0 auto' : '20px 10px')};
-   padding: ${props => (props.isMobile ? '10px 10px 20px 10px' : '45px 60px')};
-   width: ${props => !props.isMobile && '550px'};
+   @media ${device.mobile} {
+      border-top: 1px solid #e0e4e7;
+      margin: 20px auto 0 auto;
+      padding: 10px 10px 20px 10px;
+   }
+   @media ${device.desktop} {
+      border: 1px solid #e0e4e7;
+      border-radius: 4px;
+      margin: 20px 10px;
+      padding: 45px 60px;
+      width: 550px;
+   }
 `;
 
 export const Form = styled.form`
@@ -37,8 +43,9 @@ export const ButtonWrapper = styled.div`
    display: flex;
    flex-direction: row;
    justify-content: center;
-
-   ${props => !props.isMobile && 'margin: 0 -10px 0 auto'};
+   @media ${device.desktop} {
+      margin: 0 -10px 0 auto;
+   }
    .lds-ring {
       display: inline-block;
       position: relative;
@@ -119,8 +126,12 @@ export const RowWrapper = styled.div`
 
 export const GridWrapper = styled.div`
    display: grid;
-   grid-template-columns: ${props =>
-      props.isMobile ? 'repeat(auto-fill, 70px)' : props.grid};
+   @media ${device.mobile} {
+      grid-template-columns: repeat(auto-fill, 70px);
+   }
+   @media ${device.desktop} {
+      grid-template-columns: ${props => props.grid};
+   }
    grid-auto-rows: auto;
    grid-column-gap: 20px;
    margin-top: 10px;

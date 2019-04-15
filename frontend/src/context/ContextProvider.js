@@ -37,7 +37,7 @@ export class ContextProvider extends Component {
    };
 
    componentDidMount() {
-      if (window.innerWidth < 900) {
+      if (window.innerWidth < 1000) {
          this.setState({ isMobile: true });
       }
       this.updateWindowDimensions(true)();
@@ -62,7 +62,7 @@ export class ContextProvider extends Component {
       if (!first) {
          if (
             /iPhone|Android/i.test(navigator.userAgent) ||
-            deets.currentTarget.innerWidth < 900
+            deets.currentTarget.innerWidth < 1000
          ) {
             this.setState({ isMobile: true });
          } else {

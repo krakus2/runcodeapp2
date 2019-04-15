@@ -1,5 +1,4 @@
 import React, { Component, lazy, Suspense } from 'react';
-import axios from 'axios';
 import Select from 'react-select';
 import { withTheme } from 'styled-components';
 
@@ -36,7 +35,7 @@ class Task extends Component {
    async componentDidMount() {
       //console.log(this.props.context.taskTests);
       const params = getParams(window.location.search);
-      const res = await getDataFromDB(this.state.fromValue, params.task_id, axios);
+      const res = await getDataFromDB(this.state.fromValue, params.task_id);
       this.setState({
          dataLine: [res.data[0]],
          dataPie: res.data[1],
@@ -51,7 +50,7 @@ class Task extends Component {
    onSelectChange = async e => {
       const params = getParams(window.location.search);
       this.setState({ loading: true });
-      const res = await getDataFromDB(e.value, params.task_id, axios);
+      const res = await getDataFromDB(e.value, params.task_id);
 
       this.setState({
          dataLine: [res.data[0]],
@@ -64,7 +63,7 @@ class Task extends Component {
    };
 
    render() {
-      const { taskTests } = this.props.context;
+      /* const { taskTests } = this.props.context; */
       const { dataPie, dataLine, dataBar } = this.state;
       return (
          <Wrapper>
@@ -90,9 +89,9 @@ class Task extends Component {
                />
             </TopBar>
 
-            {taskTests.map(elem => (
+            {/* taskTests.map(elem => (
                <div key={elem.id}>{new Date(elem.date_uploaded).toString()}</div>
-            ))}
+            )) */}
             <Suspense
                fallback={
                   <div
@@ -108,6 +107,7 @@ class Task extends Component {
                }
             >
                <ChartWrapper width={900}>
+                  <h3>Liczba testów w wybranym okresie</h3>
                   <ResponsiveLine
                      data={dataLine}
                      margin={{
@@ -123,7 +123,7 @@ class Task extends Component {
                         type: 'linear',
                         stacked: true,
                         min: 0,
-                        max: 10
+                        max: dataLine[0].max < 10 ? 10 : dataLine[0].max
                      }}
                      curve="linear"
                      axisTop={null}
@@ -160,6 +160,7 @@ class Task extends Component {
                   />
                </ChartWrapper>
                <ChartWrapper>
+                  <h3>Statystyki poszczególnych podejść</h3>
                   <ResponsiveBar
                      data={dataBar}
                      keys={['value']}
@@ -204,10 +205,11 @@ class Task extends Component {
                   />
                </ChartWrapper>
                <ChartWrapper>
+                  <h3>Liczba poprawnych i błędnych rozwiązań zadania</h3>
                   <ResponsivePie
                      data={dataPie}
                      margin={{
-                        top: 0,
+                        top: -30,
                         right: 70,
                         bottom: 0,
                         left: 70

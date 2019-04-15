@@ -7,6 +7,23 @@ const tasksRouteUtils = require('../../utils/tasksRouteUtils');
 const TaskService = require('../../models/index');
 const db = require('../../startup/sqldb');
 
+const {
+   createTask,
+   listTasks,
+   listXTasks,
+   findTaskById,
+   listTasksWithConditions,
+   listTasksFromXDays
+} = TaskService;
+const {
+   generateStructure,
+   zipTestyFunc,
+   zipTrescFunc,
+   resolveDataToLineChart,
+   resolveDataToPieChart,
+   resolveDataToBarChart
+} = tasksRouteUtils;
+
 ['log', 'warn', 'error'].forEach(methodName => {
    const originalMethod = console[methodName];
    console[methodName] = (...args) => {
@@ -41,23 +58,6 @@ const options = {
 
 const cache = new LRU(options);
 
-const {
-   createTask,
-   listTasks,
-   listXTasks,
-   findTaskById,
-   listTasksWithConditions,
-   listTasksFromXDays
-} = TaskService;
-const {
-   generateStructure,
-   zipTestyFunc,
-   zipTrescFunc,
-   resolveDataToLineChart,
-   resolveDataToPieChart,
-   resolveDataToBarChart
-} = tasksRouteUtils;
-
 // @route   GET api/tasks/test
 // @desc    Test tasks route
 // @access  Public
@@ -72,7 +72,6 @@ router.get('/test', (req, res) => {
 // @access  Public
 router.get('/tests', (req, res) => {
    const result = {};
-   console.log(result['x']);
    db.query('SELECT * FROM `task_submit`', function(error, results, fields) {
       //TODO - obsluga pustej zwrotki z bazy i bledu
       results.forEach((elem, i) => {
@@ -94,8 +93,6 @@ router.get('/tests', (req, res) => {
 //       za pomoca metody cache.prune()
 router.get('/tests/task_id=:id&test_date=:date&from_value=:fromValue', (req, res) => {
    const { id, date, fromValue } = req.params;
-   /*    console.log(cache.itemCount, "z cache'u");
-   console.log(cache.keys().forEach(elem => console.log(elem, "z cache'u")), Date.now()); */
    if (cache.has(`id=${id}&from_value=${fromValue}`)) {
       return res.json(cache.get(`id=${id}&from_value=${fromValue}`));
    } else {
@@ -103,7 +100,6 @@ router.get('/tests/task_id=:id&test_date=:date&from_value=:fromValue', (req, res
          db.query(
             `SELECT * FROM \`task_submit\` WHERE id_task=${id} AND date_uploaded >= '${date}' ORDER by id_user`,
             function(error, results, fields) {
-               console.log(`id=${id}&from_value=${fromValue}`);
                cache.set(`id=${id}&from_value=${fromValue}`, [
                   resolveDataToLineChart(results, fromValue, id),
                   resolveDataToPieChart(results),
@@ -116,7 +112,6 @@ router.get('/tests/task_id=:id&test_date=:date&from_value=:fromValue', (req, res
          db.query(
             `SELECT * FROM \`task_submit\` WHERE id_task=${id} ORDER by id_user`,
             function(error, results, fields) {
-               console.log(`id=${id}&from_value=${fromValue}`);
                cache.set(`id=${id}&from_value=${fromValue}`, [
                   resolveDataToLineChart(results, fromValue, id),
                   resolveDataToPieChart(results),

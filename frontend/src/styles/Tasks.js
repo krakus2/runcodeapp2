@@ -1,15 +1,16 @@
 import styled from 'styled-components';
 import { addAlphaChannel } from '../utils/utils';
+import { device } from './breakpoints';
 
 export const Wrapper = styled.main`
    display: flex;
    flex-direction: column;
    align-items: center;
    background-color: ${props => props.theme.backgroundColor};
-   @media (max-width: 899px) {
+   @media ${device.mobile} {
       /* padding-bottom: 25px; */
    }
-   @media (min-width: 900px) {
+   @media ${device.desktop} {
       /* height: calc(100vh - 101px); */
    }
    ul {
@@ -24,11 +25,17 @@ export const Wrapper = styled.main`
 `;
 
 export const ChartWrapper = styled.div`
-   @media (min-width: 900px) {
+   text-align: center;
+   h3 {
+      padding: 0;
+      margin: 20px 0 0 0;
+   }
+   @media ${device.desktop} {
       width: ${props => (props.width ? `${props.width}px` : '500px')};
       height: ${props => (props.height ? `${props.height}px` : '500px')};
+      margin-bottom: 50px;
    }
-   @media (max-width: 899px) {
+   @media ${device.mobile} {
       width: 300px;
       height: 300px;
    }
@@ -55,7 +62,7 @@ export const Line = styled.li`
 
 export const TopBar = styled.div`
    display: flex;
-   @media (min-width: 900px) {
+   @media ${device.desktop} {
       flex-direction: row;
       justify-content: center;
       align-items: center;
@@ -67,7 +74,7 @@ export const TopBar = styled.div`
          font-size: 28px;
       }
    }
-   @media (max-width: 899px) {
+   @media ${device.mobile} {
       flex-direction: column;
       justify-content: center;
       align-items: center;

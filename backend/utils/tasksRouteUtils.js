@@ -134,6 +134,15 @@ const resolveDataToLineChart = (sqlData, fromValue, task_id) => {
          const index = subtractFunc(elem.date_uploaded);
          data.data[index - 1].y++;
       });
+
+      const max = data.data.reduce((acc, curr) => {
+         if (curr.y > acc) {
+            acc = curr.y;
+         }
+         return acc;
+      }, 0);
+
+      data.max = max;
    }
    return data;
 };

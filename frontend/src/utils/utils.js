@@ -52,7 +52,7 @@ const api = axios.create({
    adapter: cache.adapter
 });
 
-export async function getDataFromDB(fromValue, task_id, axios) {
+export async function getDataFromDB(fromValue, task_id) {
    if (fromValue !== 'all') {
       const d = new Date();
       d.setDate(d.getDate() - fromValue);

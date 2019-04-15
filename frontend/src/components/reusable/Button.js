@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { device } from '../../styles/breakpoints';
 
 export const ButtonStyles = styled.button`
    background-color: ${props => props.theme.secondaryColor};
@@ -23,7 +24,7 @@ export const ButtonStyles = styled.button`
    font-weight: 500;
    padding: 0 30px;
    height: ${props => props.height};
-   @media (min-width: 900px) {
+   @media ${device.desktop} {
       position: relative;
       top: ${props => props.top};
    }
