@@ -1,9 +1,45 @@
 const express = require('express');
 const router = express.Router();
+const LRU = require('lru-cache');
+
 const validateProfileInput = require('../../validators/task');
 const tasksRouteUtils = require('../../utils/tasksRouteUtils');
 const TaskService = require('../../models/index');
 const db = require('../../startup/sqldb');
+
+['log', 'warn', 'error'].forEach(methodName => {
+   const originalMethod = console[methodName];
+   console[methodName] = (...args) => {
+      let initiator = 'unknown place';
+      try {
+         throw new Error();
+      } catch (e) {
+         if (typeof e.stack === 'string') {
+            let isFirst = true;
+            for (const line of e.stack.split('\n')) {
+               const matches = line.match(/^\s+at\s+(.*)/);
+               if (matches) {
+                  if (!isFirst) {
+                     // first line - current function
+                     // second line - caller (what we are looking for)
+                     initiator = matches[1];
+                     break;
+                  }
+                  isFirst = false;
+               }
+            }
+         }
+      }
+      originalMethod.apply(console, [...args, '\n', `  at ${initiator}`]);
+   };
+});
+
+const options = {
+   max: 500,
+   maxAge: 1000 * 60 * 60
+};
+
+const cache = new LRU(options);
 
 const {
    createTask,
@@ -54,110 +90,43 @@ router.get('/tests', (req, res) => {
 // @route   GET api/tasks/teststask_id=:id&test_date=:date
 // @desc    get specified portion of tests data
 // @access  Public
+//TODO - ustawic serwer tak, by co jakis czas sam czyscil cache ze starych obiektow
+//       za pomoca metody cache.prune()
 router.get('/tests/task_id=:id&test_date=:date&from_value=:fromValue', (req, res) => {
    const { id, date, fromValue } = req.params;
-   let data;
-   if (date !== 'all') {
-      db.query(
-         `SELECT * FROM \`task_submit\` WHERE id_task=${id} AND date_uploaded >= '${date}' ORDER by id_user`,
-         function(error, results, fields) {
-            return res.json([
-               resolveDataToLineChart(results, fromValue, id),
-               resolveDataToPieChart(results),
-               resolveDataToBarChart(results)
-            ]);
-         }
-      );
+   /*    console.log(cache.itemCount, "z cache'u");
+   console.log(cache.keys().forEach(elem => console.log(elem, "z cache'u")), Date.now()); */
+   if (cache.has(`id=${id}&from_value=${fromValue}`)) {
+      return res.json(cache.get(`id=${id}&from_value=${fromValue}`));
    } else {
-      db.query(
-         `SELECT * FROM \`task_submit\` WHERE id_task=${id} ORDER by id_user`,
-         function(error, results, fields) {
-            return res.json([
-               resolveDataToLineChart(results, fromValue, id),
-               resolveDataToPieChart(results),
-               resolveDataToBarChart(results)
-            ]);
-         }
-      );
+      if (date !== 'all') {
+         db.query(
+            `SELECT * FROM \`task_submit\` WHERE id_task=${id} AND date_uploaded >= '${date}' ORDER by id_user`,
+            function(error, results, fields) {
+               console.log(`id=${id}&from_value=${fromValue}`);
+               cache.set(`id=${id}&from_value=${fromValue}`, [
+                  resolveDataToLineChart(results, fromValue, id),
+                  resolveDataToPieChart(results),
+                  resolveDataToBarChart(results)
+               ]);
+               return res.json(cache.get(`id=${id}&from_value=${fromValue}`));
+            }
+         );
+      } else {
+         db.query(
+            `SELECT * FROM \`task_submit\` WHERE id_task=${id} ORDER by id_user`,
+            function(error, results, fields) {
+               console.log(`id=${id}&from_value=${fromValue}`);
+               cache.set(`id=${id}&from_value=${fromValue}`, [
+                  resolveDataToLineChart(results, fromValue, id),
+                  resolveDataToPieChart(results),
+                  resolveDataToBarChart(results)
+               ]);
+               return res.json(cache.get(`id=${id}&from_value=${fromValue}`));
+            }
+         );
+      }
    }
-});
-
-// @route   GET api/tasks/tests/user_id=:id
-// @desc    get specified portion of tests data
-// @access  Public
-router.get('/tests/user_id=:id', (req, res) => {
-   const { id } = req.params;
-   db.query(
-      `SELECT * FROM \`task_submit\` WHERE id_user=${id} ORDER BY id_user`,
-      function(error, results, fields) {
-         return res.json(results);
-      }
-   );
-});
-
-// @route   GET api/tasks/tests/x
-// @desc    get specified portion of tests data
-// @access  Public
-router.get('/tests/x', (req, res) => {
-   const { id } = req.params;
-   db.query(
-      `select * from task_submit t1 inner join
-    (
-      select min(date_uploaded) date_uploaded, id_task, id_user
-      from task_submit 
-      group by id_task
-    ) t2
-      on t1.id_user = t2.id_user
-      and t1.id_task = t2.id_task
-      where error_count=0 and t1.id_task=9`,
-      function(error, results, fields) {
-         return res.json(results);
-      }
-   );
-});
-
-router.get('/tests/xd', (req, res) => {
-   const { id } = req.params;
-   db.query(
-      `select min(date_uploaded) date_uploaded, id, id_task, id_user
-      from task_submit 
-      group by id_task`,
-      function(error, results, fields) {
-         return res.json(results);
-      }
-   );
-});
-
-//to jest spoko
-router.get('/tests/xdd', (req, res) => {
-   const { id } = req.params;
-   db.query(
-      `select date_uploaded, id, id_task, id_user
-      from task_submit 
-      where id_task=9
-      order by id_user 
-      `,
-      function(error, results, fields) {
-         return res.json(results);
-      }
-   );
-});
-
-router.get('/tests/xddd', (req, res) => {
-   const { id } = req.params;
-   db.query(
-      `select date_uploaded, id, id_task, id_user
-      from task_submit 
-      where id_user=2
-      order by id_task`,
-      function(error, results, fields) {
-         if (!error) {
-            return res.json(results);
-         } else {
-            throw new Error(error);
-         }
-      }
-   );
 });
 
 // @route   GET api/tasks/all

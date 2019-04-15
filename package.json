@@ -20,6 +20,7 @@
    "author": "Filip Krakowiak",
    "license": "ISC",
    "dependencies": {
-      "concurrently": "^4.1.0"
+      "concurrently": "^4.1.0",
+      "localforage": "^1.7.3"
    }
 }

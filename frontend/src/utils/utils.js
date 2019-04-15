@@ -1,3 +1,6 @@
+import axios from 'axios';
+import { setupCache } from 'axios-cache-adapter';
+
 export const validateEmail = email => {
    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
    return re.test(email);
@@ -40,19 +43,31 @@ export function getSqlYear(d) {
    }-${d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}`;
 }
 
-export function getDataFromDB(fromValue, task_id, axios) {
+const cache = setupCache({
+   maxAge: 15 * 60 * 1000 //15 minutes
+});
+
+// Create `axios` instance passing the newly created `cache.adapter`
+const api = axios.create({
+   adapter: cache.adapter
+});
+
+export async function getDataFromDB(fromValue, task_id, axios) {
    if (fromValue !== 'all') {
       const d = new Date();
       d.setDate(d.getDate() - fromValue);
       const sqlDate = getSqlYear(d);
-
-      return axios.get(
-         `/api/tasks/tests/task_id=${task_id}&test_date=${sqlDate}&from_value=${fromValue}`
-      );
+      const length = await cache.store.length();
+      console.log('Cache store length:', length);
+      return api({
+         url: `/api/tasks/tests/task_id=${task_id}&test_date=${sqlDate}&from_value=${fromValue}`,
+         method: 'get'
+      });
    } else {
-      return axios.get(
-         `/api/tasks/tests/task_id=${task_id}&test_date=all&from_value=${fromValue}`
-      );
+      return api({
+         url: `/api/tasks/tests/task_id=${task_id}&test_date=all&from_value=${fromValue}`,
+         method: 'get'
+      });
    }
 }
 

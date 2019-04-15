@@ -4,14 +4,7 @@ import Select from 'react-select';
 import { withTheme } from 'styled-components';
 
 import withContext from '../../context/Context_HOC';
-import {
-   addAlphaChannel,
-   memoize,
-   getDataFromDB,
-   getParams,
-   subtractFunc,
-   getSqlYear
-} from '../../utils/utils';
+import { addAlphaChannel, getDataFromDB, getParams } from '../../utils/utils';
 import { Wrapper, ChartWrapper, TopBar, theme, colourStyles } from '../../styles/Tasks';
 
 const ResponsivePie = lazy(() => import('../layout/charts/Pie'));
@@ -34,133 +27,11 @@ class Task extends Component {
             data: []
          }
       ],
-      dataBar: [
-         {
-            country: 'AD',
-            'hot dog': 185,
-            'hot dogColor': 'hsl(221, 70%, 50%)',
-            burger: 68,
-            burgerColor: 'hsl(39, 70%, 50%)',
-            sandwich: 58,
-            sandwichColor: 'hsl(115, 70%, 50%)',
-            kebab: 199,
-            kebabColor: 'hsl(287, 70%, 50%)',
-            fries: 129,
-            friesColor: 'hsl(218, 70%, 50%)',
-            donut: 154,
-            donutColor: 'hsl(104, 70%, 50%)'
-         }
-      ],
+      dataBar: [],
       from: options[0],
       fromValue: 7,
       loading: false
    };
-
-   resolveDataToLineChart = (sqlData, fromValue, task_id) => {
-      const data = {
-         id: task_id,
-         color: 'hsl(349, 70%, 50%)',
-         data: []
-      };
-
-      if (sqlData.length) {
-         const subtract = subtractFunc(sqlData[sqlData.length - 1].date_uploaded);
-         const d = new Date();
-         const howMany =
-            fromValue === 'all' ? (subtract > 365 ? subtract : 365) : fromValue;
-
-         for (let i = 0; i < howMany; i++) {
-            d.setDate(d.getDate() - 1);
-            data.data.push({
-               x: getSqlYear(d),
-               y: 0
-            });
-         }
-
-         sqlData.forEach((elem, i) => {
-            const index = subtractFunc(elem.date_uploaded);
-            data.data[index - 1].y++;
-         });
-      }
-      return data;
-   };
-
-   resolveDataToPieChart(sqlData) {
-      const data = [
-         { id: 'sukces', label: 'sukces', value: 0, color: 'green' },
-         { id: 'porażka', label: 'porażka', value: 0, color: 'red' }
-      ];
-
-      sqlData.forEach((elem, i) => {
-         if (elem.error_count === 0) {
-            data[0].value++;
-         } else {
-            data[1].value++;
-         }
-      });
-      return data;
-   }
-
-   resolveDataToBarChart(sqlData) {
-      const data = sqlData.reduce((acc, elem, i, array) => {
-         if (i === 0) {
-            acc.push([{ ...elem }]);
-         } else {
-            if (array[i].id_user !== array[i - 1].id_user) {
-               acc.push([{ ...elem }]);
-            } else {
-               acc[acc.length - 1].push({ ...elem });
-            }
-         }
-         return acc;
-      }, []);
-
-      const statsObj = {
-         success1: 0,
-         defeat1: 0,
-         success2: 0,
-         defeat2: 0,
-         success3: 0,
-         defeat3: 0
-      };
-
-      data.forEach((elem, i) => {
-         if (elem[0] !== undefined) {
-            if (elem[0].error_count === 0) {
-               statsObj.success1++;
-            } else {
-               statsObj.defeat1++;
-            }
-         }
-         if (elem[1] !== undefined) {
-            if (elem[1].error_count === 0) {
-               statsObj.success2++;
-            } else {
-               statsObj.defeat2++;
-            }
-         }
-         if (elem[2] !== undefined) {
-            if (elem[2].error_count === 0) {
-               statsObj.success3++;
-            } else {
-               statsObj.defeat3++;
-            }
-         }
-      });
-      const returnData = [];
-      for (let i = 0; i < 3; i++) {
-         returnData.push({
-            attempt: `${i + 1} próba`,
-            /* sukcesColor: "hsl(39, 70%, 50%)", */
-            value: Math.round(
-               (statsObj[`success${i + 1}`] /
-                  (statsObj.success1 + statsObj[`defeat${i + 1}`])) *
-                  100
-            )
-         });
-      }
-      return returnData;
-   }
 
    async componentDidMount() {
       //console.log(this.props.context.taskTests);
@@ -171,35 +42,17 @@ class Task extends Component {
          dataPie: res.data[1],
          dataBar: res.data[2]
       });
-
-      /* const memoized_resolveDataToPieChart = memoize(this.resolveDataToPieChart);
-      const memoized_resolveDataToLineChart = memoize(this.resolveDataToLineChart);
-      const memoized_resolveDataToBarChart = memoize(this.resolveDataToBarChart);
-      const dataPie = memoized_resolveDataToPieChart(res.data, 'dataPie');
-      const dataLine = memoized_resolveDataToLineChart(
-         res.data,
-         this.state.fromValue,
-         params.task_id
-      );
-      const dataBar = memoized_resolveDataToBarChart(res.data, 'dataBar');
-      this.setState({ dataPie, dataLine: [dataLine], dataBar }); */
    }
 
-   componentWillUnmount() {
+   /*  componentWillUnmount() {
       localStorage.removeItem('store');
-   }
+   } */
 
    onSelectChange = async e => {
       const params = getParams(window.location.search);
       this.setState({ loading: true });
       const res = await getDataFromDB(e.value, params.task_id, axios);
 
-      /* const memoized_resolveDataToPieChart = memoize(this.resolveDataToPieChart);
-      const memoized_resolveDataToLineChart = memoize(this.resolveDataToLineChart);
-      const memoized_resolveDataToBarChart = memoize(this.resolveDataToBarChart);
-      const dataBar = memoized_resolveDataToBarChart(res.data, 'dataBar');
-      const dataPie = memoized_resolveDataToPieChart(res.data, 'dataPie');
-      const dataLine = memoized_resolveDataToLineChart(res.data, e.value, params.task_id); */
       this.setState({
          dataLine: [res.data[0]],
          dataPie: res.data[1],
@@ -238,9 +91,7 @@ class Task extends Component {
             </TopBar>
 
             {taskTests.map(elem => (
-               <div key={elem.date_uploaded}>
-                  {new Date(elem.date_uploaded).toString()}
-               </div>
+               <div key={elem.id}>{new Date(elem.date_uploaded).toString()}</div>
             ))}
             <Suspense
                fallback={
