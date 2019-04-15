@@ -79,3 +79,42 @@ export const TopBar = styled.div`
       }
    }
 `;
+
+export const theme = size => {
+   return {
+      axis: {
+         legend: {
+            text: {
+               fontSize: size,
+               fontFamily: 'Roboto'
+            }
+         }
+      }
+   };
+};
+
+export function colourStyles() {
+   return {
+      control: styles => ({ ...styles, cursor: 'pointer' }),
+      option: styles => ({ ...styles, cursor: 'pointer' }),
+      input: (styles, { isDisabled, isFocused, isSelected }) => ({
+         ...styles,
+         width: this.props.context.isMobile ? 200 : 300,
+         minHeight: this.props.context.isMobile ? '14px' : '25px',
+         lineHeight: this.props.context.isMobile ? '14px' : '25px',
+         color: this.props.theme.color,
+         cursor: 'pointer'
+      }),
+      placeholder: styles => ({
+         ...styles,
+         color: this.props.theme.placeholderColor,
+         cursor: 'pointer',
+         fontSize: this.props.context.isMobile && '15px'
+      }),
+      singleValue: styles => ({
+         ...styles,
+         color: this.props.theme.color,
+         cursor: 'pointer'
+      })
+   };
+}

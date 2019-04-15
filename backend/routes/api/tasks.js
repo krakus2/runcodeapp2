@@ -13,7 +13,14 @@ const {
    listTasksWithConditions,
    listTasksFromXDays
 } = TaskService;
-const { generateStructure, zipTestyFunc, zipTrescFunc } = tasksRouteUtils;
+const {
+   generateStructure,
+   zipTestyFunc,
+   zipTrescFunc,
+   resolveDataToLineChart,
+   resolveDataToPieChart,
+   resolveDataToBarChart
+} = tasksRouteUtils;
 
 // @route   GET api/tasks/test
 // @desc    Test tasks route
@@ -31,6 +38,7 @@ router.get('/tests', (req, res) => {
    const result = {};
    console.log(result['x']);
    db.query('SELECT * FROM `task_submit`', function(error, results, fields) {
+      //TODO - obsluga pustej zwrotki z bazy i bledu
       results.forEach((elem, i) => {
          if (result[elem.id_task] === undefined) {
             result[elem.id_task] = [];
@@ -43,24 +51,113 @@ router.get('/tests', (req, res) => {
    });
 });
 
-router.get('/tests/task_id=:id&test_date=:date', (req, res) => {
-   const { id, date } = req.params;
+// @route   GET api/tasks/teststask_id=:id&test_date=:date
+// @desc    get specified portion of tests data
+// @access  Public
+router.get('/tests/task_id=:id&test_date=:date&from_value=:fromValue', (req, res) => {
+   const { id, date, fromValue } = req.params;
+   let data;
    if (date !== 'all') {
       db.query(
-         `SELECT * FROM \`task_submit\` WHERE id_task=${id} AND date_uploaded >= '${date}'`,
+         `SELECT * FROM \`task_submit\` WHERE id_task=${id} AND date_uploaded >= '${date}' ORDER by id_user`,
          function(error, results, fields) {
-            return res.json(results);
+            return res.json([
+               resolveDataToLineChart(results, fromValue, id),
+               resolveDataToPieChart(results),
+               resolveDataToBarChart(results)
+            ]);
          }
       );
    } else {
-      db.query(`SELECT * FROM \`task_submit\` WHERE id_task=${id}`, function(
-         error,
-         results,
-         fields
-      ) {
-         return res.json(results);
-      });
+      db.query(
+         `SELECT * FROM \`task_submit\` WHERE id_task=${id} ORDER by id_user`,
+         function(error, results, fields) {
+            return res.json([
+               resolveDataToLineChart(results, fromValue, id),
+               resolveDataToPieChart(results),
+               resolveDataToBarChart(results)
+            ]);
+         }
+      );
    }
+});
+
+// @route   GET api/tasks/tests/user_id=:id
+// @desc    get specified portion of tests data
+// @access  Public
+router.get('/tests/user_id=:id', (req, res) => {
+   const { id } = req.params;
+   db.query(
+      `SELECT * FROM \`task_submit\` WHERE id_user=${id} ORDER BY id_user`,
+      function(error, results, fields) {
+         return res.json(results);
+      }
+   );
+});
+
+// @route   GET api/tasks/tests/x
+// @desc    get specified portion of tests data
+// @access  Public
+router.get('/tests/x', (req, res) => {
+   const { id } = req.params;
+   db.query(
+      `select * from task_submit t1 inner join
+    (
+      select min(date_uploaded) date_uploaded, id_task, id_user
+      from task_submit 
+      group by id_task
+    ) t2
+      on t1.id_user = t2.id_user
+      and t1.id_task = t2.id_task
+      where error_count=0 and t1.id_task=9`,
+      function(error, results, fields) {
+         return res.json(results);
+      }
+   );
+});
+
+router.get('/tests/xd', (req, res) => {
+   const { id } = req.params;
+   db.query(
+      `select min(date_uploaded) date_uploaded, id, id_task, id_user
+      from task_submit 
+      group by id_task`,
+      function(error, results, fields) {
+         return res.json(results);
+      }
+   );
+});
+
+//to jest spoko
+router.get('/tests/xdd', (req, res) => {
+   const { id } = req.params;
+   db.query(
+      `select date_uploaded, id, id_task, id_user
+      from task_submit 
+      where id_task=9
+      order by id_user 
+      `,
+      function(error, results, fields) {
+         return res.json(results);
+      }
+   );
+});
+
+router.get('/tests/xddd', (req, res) => {
+   const { id } = req.params;
+   db.query(
+      `select date_uploaded, id, id_task, id_user
+      from task_submit 
+      where id_user=2
+      order by id_task`,
+      function(error, results, fields) {
+         if (!error) {
+            return res.json(results);
+         } else {
+            throw new Error(error);
+         }
+      }
+   );
 });
 
 // @route   GET api/tasks/all

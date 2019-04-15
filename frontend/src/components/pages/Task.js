@@ -1,72 +1,22 @@
 import React, { Component, lazy, Suspense } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
-import withContext from '../../context/Context_HOC';
 import { withTheme } from 'styled-components';
-import { addAlphaChannel } from '../../utils/utils';
 
-import { Wrapper, ChartWrapper, TopBar } from '../../styles/Tasks';
-import { PieChart, Pie, Legend } from 'recharts';
+import withContext from '../../context/Context_HOC';
+import {
+   addAlphaChannel,
+   memoize,
+   getDataFromDB,
+   getParams,
+   subtractFunc,
+   getSqlYear
+} from '../../utils/utils';
+import { Wrapper, ChartWrapper, TopBar, theme, colourStyles } from '../../styles/Tasks';
+
 const ResponsivePie = lazy(() => import('../layout/charts/Pie'));
 const ResponsiveLine = lazy(() => import('../layout/charts/Line'));
-
-function getParams(location) {
-   const searchParams = new URLSearchParams(location);
-   return {
-      task_id: searchParams.get('task_id') || ''
-   };
-}
-
-function subtractFunc(date) {
-   return Math.round((Date.now() - new Date(date)) / (1000 * 3600 * 24));
-}
-
-function getSqlYear(d) {
-   return `${d.getFullYear()}-${
-      d.getMonth() + 1 < 10 ? `0${d.getMonth() + 1}` : d.getMonth() + 1
-   }-${d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}`;
-}
-
-function getDataFromDB(fromValue, task_id) {
-   if (fromValue !== 'all') {
-      const d = new Date();
-      d.setDate(d.getDate() - fromValue);
-      const sqlDate = getSqlYear(d);
-
-      return axios.get(`/api/tasks/tests/task_id=${task_id}&test_date=${sqlDate}`);
-   } else {
-      return axios.get(`/api/tasks/tests/task_id=${task_id}&test_date=all`);
-   }
-}
-
-function memoize(f) {
-   let store = new Map(JSON.parse(localStorage.getItem('store'))) || new Map();
-
-   return function(...args) {
-      //TODO - dodaj maxAge
-      const k = JSON.stringify(args);
-      if (store.has(k)) {
-         console.log('z cachem');
-         return store.get(k);
-      } else {
-         console.log("bez cache'a");
-         store.set(k, f(...args));
-         localStorage.setItem('store', JSON.stringify(Array.from(store.entries())));
-         return store.get(k);
-      }
-   };
-}
-
-const theme = {
-   axis: {
-      legend: {
-         text: {
-            fontSize: 18,
-            fontFamily: 'Roboto'
-         }
-      }
-   }
-};
+const ResponsiveBar = lazy(() => import('../layout/charts/Bar'));
 
 const options = [
    { value: 7, label: 'z ostatnich 7 dni' },
@@ -84,33 +34,26 @@ class Task extends Component {
             data: []
          }
       ],
+      dataBar: [
+         {
+            country: 'AD',
+            'hot dog': 185,
+            'hot dogColor': 'hsl(221, 70%, 50%)',
+            burger: 68,
+            burgerColor: 'hsl(39, 70%, 50%)',
+            sandwich: 58,
+            sandwichColor: 'hsl(115, 70%, 50%)',
+            kebab: 199,
+            kebabColor: 'hsl(287, 70%, 50%)',
+            fries: 129,
+            friesColor: 'hsl(218, 70%, 50%)',
+            donut: 154,
+            donutColor: 'hsl(104, 70%, 50%)'
+         }
+      ],
       from: options[0],
       fromValue: 7,
       loading: false
-   };
-
-   colourStyles = {
-      control: styles => ({ ...styles, cursor: 'pointer' }),
-      option: styles => ({ ...styles, cursor: 'pointer' }),
-      input: (styles, { isDisabled, isFocused, isSelected }) => ({
-         ...styles,
-         width: this.props.context.isMobile ? 200 : 300,
-         minHeight: this.props.context.isMobile ? '14px' : '25px',
-         lineHeight: this.props.context.isMobile ? '14px' : '25px',
-         color: this.props.theme.color,
-         cursor: 'pointer'
-      }),
-      placeholder: styles => ({
-         ...styles,
-         color: this.props.theme.placeholderColor,
-         cursor: 'pointer',
-         fontSize: this.props.context.isMobile && '15px'
-      }),
-      singleValue: styles => ({
-         ...styles,
-         color: this.props.theme.color,
-         cursor: 'pointer'
-      })
    };
 
    resolveDataToLineChart = (sqlData, fromValue, task_id) => {
@@ -158,37 +101,109 @@ class Task extends Component {
       return data;
    }
 
+   resolveDataToBarChart(sqlData) {
+      const data = sqlData.reduce((acc, elem, i, array) => {
+         if (i === 0) {
+            acc.push([{ ...elem }]);
+         } else {
+            if (array[i].id_user !== array[i - 1].id_user) {
+               acc.push([{ ...elem }]);
+            } else {
+               acc[acc.length - 1].push({ ...elem });
+            }
+         }
+         return acc;
+      }, []);
+
+      const statsObj = {
+         success1: 0,
+         defeat1: 0,
+         success2: 0,
+         defeat2: 0,
+         success3: 0,
+         defeat3: 0
+      };
+
+      data.forEach((elem, i) => {
+         if (elem[0] !== undefined) {
+            if (elem[0].error_count === 0) {
+               statsObj.success1++;
+            } else {
+               statsObj.defeat1++;
+            }
+         }
+         if (elem[1] !== undefined) {
+            if (elem[1].error_count === 0) {
+               statsObj.success2++;
+            } else {
+               statsObj.defeat2++;
+            }
+         }
+         if (elem[2] !== undefined) {
+            if (elem[2].error_count === 0) {
+               statsObj.success3++;
+            } else {
+               statsObj.defeat3++;
+            }
+         }
+      });
+      const returnData = [];
+      for (let i = 0; i < 3; i++) {
+         returnData.push({
+            attempt: `${i + 1} próba`,
+            /* sukcesColor: "hsl(39, 70%, 50%)", */
+            value: Math.round(
+               (statsObj[`success${i + 1}`] /
+                  (statsObj.success1 + statsObj[`defeat${i + 1}`])) *
+                  100
+            )
+         });
+      }
+      return returnData;
+   }
+
    async componentDidMount() {
       //console.log(this.props.context.taskTests);
-      window.localStorage.setItem('xd', Math.random());
       const params = getParams(window.location.search);
-      const res = await getDataFromDB(this.state.fromValue, params.task_id);
-      const dataPie = this.resolveDataToPieChart(res.data);
-      const dataLine = this.resolveDataToLineChart(
+      const res = await getDataFromDB(this.state.fromValue, params.task_id, axios);
+      this.setState({
+         dataLine: [res.data[0]],
+         dataPie: res.data[1],
+         dataBar: res.data[2]
+      });
+
+      /* const memoized_resolveDataToPieChart = memoize(this.resolveDataToPieChart);
+      const memoized_resolveDataToLineChart = memoize(this.resolveDataToLineChart);
+      const memoized_resolveDataToBarChart = memoize(this.resolveDataToBarChart);
+      const dataPie = memoized_resolveDataToPieChart(res.data, 'dataPie');
+      const dataLine = memoized_resolveDataToLineChart(
          res.data,
          this.state.fromValue,
          params.task_id
       );
-      this.setState({ dataPie, dataLine: [dataLine] });
+      const dataBar = memoized_resolveDataToBarChart(res.data, 'dataBar');
+      this.setState({ dataPie, dataLine: [dataLine], dataBar }); */
    }
 
    componentWillUnmount() {
-      window.localStorage.setItem('store', JSON.stringify([]));
+      localStorage.removeItem('store');
    }
 
    onSelectChange = async e => {
       const params = getParams(window.location.search);
       this.setState({ loading: true });
-      const res = await getDataFromDB(e.value, params.task_id);
-      /* console.log(res.data); */
-      const memoized_resolveDataToPieChart = memoize(this.resolveDataToPieChart);
-      const memoized_resolveDataToLineChart = memoize(this.resolveDataToLineChart);
-      const dataPie = memoized_resolveDataToPieChart(res.data);
-      const dataLine = memoized_resolveDataToLineChart(res.data, e.value, params.task_id);
+      const res = await getDataFromDB(e.value, params.task_id, axios);
 
+      /* const memoized_resolveDataToPieChart = memoize(this.resolveDataToPieChart);
+      const memoized_resolveDataToLineChart = memoize(this.resolveDataToLineChart);
+      const memoized_resolveDataToBarChart = memoize(this.resolveDataToBarChart);
+      const dataBar = memoized_resolveDataToBarChart(res.data, 'dataBar');
+      const dataPie = memoized_resolveDataToPieChart(res.data, 'dataPie');
+      const dataLine = memoized_resolveDataToLineChart(res.data, e.value, params.task_id); */
       this.setState({
-         dataPie,
-         dataLine: [dataLine],
+         dataLine: [res.data[0]],
+         dataPie: res.data[1],
+         dataBar: res.data[2],
          from: { label: e.label, value: e.value },
          fromValue: e.value,
          loading: false
@@ -197,7 +212,7 @@ class Task extends Component {
 
    render() {
       const { taskTests } = this.props.context;
-      const { dataPie, dataLine } = this.state;
+      const { dataPie, dataLine, dataBar } = this.state;
       return (
          <Wrapper>
             {/*{!!this.state.loading && <p>loading...</p>} */}
@@ -205,7 +220,7 @@ class Task extends Component {
                <h3>Statystyki zadania</h3>
                <Select
                   options={options}
-                  styles={this.colourStyles}
+                  styles={colourStyles.call(this)}
                   theme={theme => ({
                      ...theme,
                      colors: {
@@ -290,7 +305,51 @@ class Task extends Component {
                      isInteractive={false}
                      enableStackTooltip={false}
                      legends={[]}
-                     theme={theme}
+                     theme={theme(18)}
+                  />
+               </ChartWrapper>
+               <ChartWrapper>
+                  <ResponsiveBar
+                     data={dataBar}
+                     keys={['value']}
+                     indexBy="attempt"
+                     labelFormat={v => `${v}%`}
+                     margin={{
+                        top: 50,
+                        right: 70,
+                        bottom: 60,
+                        left: 70
+                     }}
+                     padding={0.3}
+                     colors="nivo"
+                     colorBy="id"
+                     borderColor="inherit:darker(1.6)"
+                     axisTop={null}
+                     axisRight={null}
+                     axisBottom={{
+                        tickSize: 5,
+                        tickPadding: 5,
+                        tickRotation: 0,
+                        legend: 'podejście',
+                        legendPosition: 'middle',
+                        legendOffset: 45
+                     }}
+                     axisLeft={{
+                        tickSize: 5,
+                        tickPadding: 15,
+                        tickRotation: 0,
+                        legend: 'procent sukcesów',
+                        legendPosition: 'middle',
+                        legendOffset: -60,
+                        format: v => `${v}%`
+                     }}
+                     labelSkipWidth={12}
+                     labelSkipHeight={12}
+                     labelTextColor="inherit:darker(1.6)"
+                     animate={true}
+                     motionStiffness={90}
+                     motionDamping={15}
+                     theme={theme(14)}
                   />
                </ChartWrapper>
                <ChartWrapper>

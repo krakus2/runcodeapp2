@@ -7,6 +7,7 @@ import Input from '../reusable/Input';
 import { HeaderWrapper, FormWrapper, MyAppBar, Links } from '../../styles/Header';
 import InlineMessage from '../reusable/InlineMessage';
 import Button from '../reusable/Button';
+import { Link } from 'react-router-dom';
 
 class Header extends Component {
    state = {
@@ -46,12 +47,12 @@ class Header extends Component {
          <MyAppBar>
             <HeaderWrapper isMobile={context.isMobile}>
                <Links isMobile={context.isMobile}>
-                  <a href="/" className="links__runcode">
+                  <Link to="/" className="links links__runcode">
                      RUNCODE
-                  </a>
-                  <a href="/tasks" className="links__tasks">
+                  </Link>
+                  <Link to="/tasks" className="links links__tasks">
                      TASKS
-                  </a>
+                  </Link>
                </Links>
                <FormWrapper
                   error={emailErr || passwordErr || loginErr}

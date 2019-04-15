@@ -32,7 +32,7 @@ export const Links = styled.div`
    font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
    font-weight: 700;
    text-transform: uppercase;
-   a {
+   .links {
       text-decoration: none;
    }
    .links__tasks {

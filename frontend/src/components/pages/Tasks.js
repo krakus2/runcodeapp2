@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-/* import { createBrowserHistory } from 'history'; */
 
 import withContext from '../../context/Context_HOC';
-//import { Wrapper } from '../../styles/Tasks';
 import { Line, Wrapper } from '../../styles/Tasks';
-
-/* const history = createBrowserHistory(); */
 
 class Tasks extends Component {
    state = {
