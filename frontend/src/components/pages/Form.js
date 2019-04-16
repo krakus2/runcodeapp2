@@ -244,7 +244,7 @@ class Landing extends Component {
             wyniki: [...Array.from(Array(x))]
          },
          () => {
-            const indeksyTablic = this.wyliczIndeksyTablic();
+            const indeksyTablic = this.calculateArrayIndexes();
             this.setState({ indeksyTablic });
          }
       );
@@ -259,12 +259,12 @@ class Landing extends Component {
       args[i * 2 + j] = valueObject === null ? valueObject : valueObject.value;
 
       this.setState({ [arrayName]: args }, () => {
-         const indeksyTablic = this.wyliczIndeksyTablic();
+         const indeksyTablic = this.calculateArrayIndexes();
          this.setState({ indeksyTablic });
       });
    };
 
-   wyliczIndeksyTablic = () => {
+   calculateArrayIndexes = () => {
       let args = [...this.state.args];
       let returnArgs = [...this.state.returnArgs];
       const { iloscArg, iloscWynikow } = this.state;
@@ -294,7 +294,7 @@ class Landing extends Component {
       this.setState({ wyniki });
    };
 
-   zmienIloscWynikow = znak => () => {
+   changeNumberOfResults = znak => () => {
       const { iloscWynikow, iloscArg } = this.state;
       const wyniki = [...this.state.wyniki];
       if (znak === '+') {
@@ -304,7 +304,7 @@ class Landing extends Component {
                wyniki: [...wyniki, ...Array.from(Array(iloscArg + 1))]
             },
             () => {
-               const indeksyTablic = this.wyliczIndeksyTablic();
+               const indeksyTablic = this.calculateArrayIndexes();
                this.setState({ indeksyTablic });
             }
          );
@@ -314,13 +314,13 @@ class Landing extends Component {
             ucieteWyniki.push(wyniki[i]);
          }
          this.setState({ iloscWynikow: iloscWynikow - 1, wyniki: ucieteWyniki }, () => {
-            const indeksyTablic = this.wyliczIndeksyTablic();
+            const indeksyTablic = this.calculateArrayIndexes();
             this.setState({ indeksyTablic });
          });
       }
    };
 
-   wygenerujStruktureFunkcji = () => {
+   generateFunctionStructure = () => {
       const { nazwaFunkcji, args, returnArgs, iloscArg } = this.state;
       const args2 = [];
       if (iloscArg === 0) {
@@ -406,7 +406,7 @@ class Landing extends Component {
                      returnArgs={returnArgs}
                      iloscArg={iloscArg}
                      isEmpty={this.isEmpty}
-                     wygenerujStruktureFunkcji={this.wygenerujStruktureFunkcji}
+                     generateFunctionStructure={this.generateFunctionStructure}
                      args={args}
                   />
                   <Editor code={code} onEditorChange={this.onEditorChange} />
@@ -416,7 +416,7 @@ class Landing extends Component {
                      iloscArg={iloscArg}
                      wyniki={wyniki}
                      indeksyTablic={indeksyTablic}
-                     zmienIloscWynikow={this.zmienIloscWynikow}
+                     changeNumberOfResults={this.changeNumberOfResults}
                   />
                   <Rekurencja
                      czyRekurencja={czyRekurencja}

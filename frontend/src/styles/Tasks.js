@@ -26,6 +26,7 @@ export const Wrapper = styled.main`
 
 export const ChartWrapper = styled.div`
    text-align: center;
+   margin-bottom: 50px;
    h3 {
       padding: 0;
       margin: 20px 0 0 0;
@@ -33,7 +34,6 @@ export const ChartWrapper = styled.div`
    @media ${device.desktop} {
       width: ${props => (props.width ? `${props.width}px` : '500px')};
       height: ${props => (props.height ? `${props.height}px` : '500px')};
-      margin-bottom: 50px;
    }
    @media ${device.mobile} {
       width: 300px;

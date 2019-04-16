@@ -58,7 +58,7 @@ class Testy extends Component {
    render() {
       const {
          handleWynikiChange,
-         zmienIloscWynikow,
+         changeNumberOfResults,
          iloscWynikow,
          iloscArg,
          wyniki,
@@ -115,7 +115,7 @@ class Testy extends Component {
                {fieldsArray}
             </GridWrapper>
             <AddRemoveButtons
-               zmienIloscWynikow={zmienIloscWynikow}
+               changeNumberOfResults={changeNumberOfResults}
                iloscWynikow={iloscWynikow}
             />
          </>

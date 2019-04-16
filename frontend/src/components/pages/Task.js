@@ -209,10 +209,10 @@ class Task extends Component {
                   <ResponsivePie
                      data={dataPie}
                      margin={{
-                        top: -30,
-                        right: 70,
+                        top: -40,
+                        right: 80,
                         bottom: 0,
-                        left: 70
+                        left: 80
                      }}
                      innerRadius={0.5}
                      padAngle={0.7}

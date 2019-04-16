@@ -6,7 +6,7 @@ export default function StrukturaFunkcji({
    returnArgs,
    iloscArg,
    isEmpty,
-   wygenerujStruktureFunkcji,
+   generateFunctionStructure,
    args
 }) {
    return (
@@ -21,7 +21,7 @@ export default function StrukturaFunkcji({
                isEmpty(returnArgs) ? (
                   'int NazwaFunkcji(int A) - przykładowa nazwa - wypełnij wszystkie pola, aby wygenerować swoją'
                ) : (
-                  <Span>{wygenerujStruktureFunkcji()}</Span>
+                  <Span>{generateFunctionStructure()}</Span>
                )}
             </h4>
          </RowWrapper>

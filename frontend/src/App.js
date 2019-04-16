@@ -55,7 +55,20 @@ class App extends Component {
    render() {
       return (
          <Router>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense
+               fallback={
+                  <div
+                     style={{
+                        textAlign: 'center',
+                        fontSize: '24px',
+                        fontWeight: '700',
+                        margin: '100px'
+                     }}
+                  >
+                     Loading...
+                  </div>
+               }
+            >
                <ThemeProvider theme={theme}>
                   <React.Fragment>
                      <GlobalStyle />

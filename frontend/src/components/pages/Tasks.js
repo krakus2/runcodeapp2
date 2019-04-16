@@ -10,6 +10,7 @@ class Tasks extends Component {
    };
    async componentDidMount() {
       const res = await axios.get('/api/tasks/tests');
+      console.log(res.data);
       this.setState({ tasks: res.data });
    }
 

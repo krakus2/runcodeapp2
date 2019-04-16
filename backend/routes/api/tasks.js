@@ -53,7 +53,7 @@ const {
 
 const options = {
    max: 500,
-   maxAge: 1000 * 60 * 60
+   maxAge: 1000
 };
 
 const cache = new LRU(options);
@@ -72,18 +72,28 @@ router.get('/test', (req, res) => {
 // @access  Public
 router.get('/tests', (req, res) => {
    const result = {};
-   db.query('SELECT * FROM `task_submit`', function(error, results, fields) {
-      //TODO - obsluga pustej zwrotki z bazy i bledu
-      results.forEach((elem, i) => {
-         if (result[elem.id_task] === undefined) {
-            result[elem.id_task] = [];
-            result[elem.id_task].push(elem);
+   if (cache.has('tests')) {
+      return res.json(cache.get('tests'));
+   } else {
+      db.query('SELECT * FROM `task_submit`', function(error, results, fields) {
+         //TODO - moznaby zwracac same id w tablicy
+         if (error) throw new Error('Something went wrong');
+         if (results.length !== 0) {
+            results.forEach((elem, i) => {
+               if (result[elem.id_task] === undefined) {
+                  result[elem.id_task] = [];
+                  result[elem.id_task].push(elem);
+               } else {
+                  result[elem.id_task].push(elem);
+               }
+            });
+            cache.set('tests', result);
+            return res.json(cache.get('tests'));
          } else {
-            result[elem.id_task].push(elem);
+            return res.json({});
          }
       });
-      return res.json(result);
-   });
+   }
 });
 
 // @route   GET api/tasks/teststask_id=:id&test_date=:date
@@ -100,24 +110,34 @@ router.get('/tests/task_id=:id&test_date=:date&from_value=:fromValue', (req, res
          db.query(
             `SELECT * FROM \`task_submit\` WHERE id_task=${id} AND date_uploaded >= '${date}' ORDER by id_user`,
             function(error, results, fields) {
-               cache.set(`id=${id}&from_value=${fromValue}`, [
-                  resolveDataToLineChart(results, fromValue, id),
-                  resolveDataToPieChart(results),
-                  resolveDataToBarChart(results)
-               ]);
-               return res.json(cache.get(`id=${id}&from_value=${fromValue}`));
+               if (error) throw new Error('Something went wrong');
+               if (results.length !== 0) {
+                  cache.set(`id=${id}&from_value=${fromValue}`, [
+                     resolveDataToLineChart(results, fromValue, id),
+                     resolveDataToPieChart(results),
+                     resolveDataToBarChart(results)
+                  ]);
+                  return res.json(cache.get(`id=${id}&from_value=${fromValue}`));
+               } else {
+                  return res.json({});
+               }
             }
          );
       } else {
          db.query(
             `SELECT * FROM \`task_submit\` WHERE id_task=${id} ORDER by id_user`,
             function(error, results, fields) {
-               cache.set(`id=${id}&from_value=${fromValue}`, [
-                  resolveDataToLineChart(results, fromValue, id),
-                  resolveDataToPieChart(results),
-                  resolveDataToBarChart(results)
-               ]);
-               return res.json(cache.get(`id=${id}&from_value=${fromValue}`));
+               if (error) throw new Error('Something went wrong');
+               if (results.length !== 0) {
+                  cache.set(`id=${id}&from_value=${fromValue}`, [
+                     resolveDataToLineChart(results, fromValue, id),
+                     resolveDataToPieChart(results),
+                     resolveDataToBarChart(results)
+                  ]);
+                  return res.json(cache.get(`id=${id}&from_value=${fromValue}`));
+               } else {
+                  return res.json({});
+               }
             }
          );
       }
