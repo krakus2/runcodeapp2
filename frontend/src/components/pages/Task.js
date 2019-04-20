@@ -20,13 +20,13 @@ const options = [
 
 class Task extends Component {
    state = {
-      dataPie: [],
+      dataPie: [{}],
       dataLine: [
          {
             data: []
          }
       ],
-      dataBar: [],
+      dataBar: [{}],
       from: options[0],
       fromValue: 7,
       loading: false
@@ -42,10 +42,6 @@ class Task extends Component {
          dataBar: res.data[2]
       });
    }
-
-   /*  componentWillUnmount() {
-      localStorage.removeItem('store');
-   } */
 
    onSelectChange = async e => {
       const params = getParams(window.location.search);

@@ -108,9 +108,10 @@ router.get('/tests/task_id=:id&test_date=:date&from_value=:fromValue', (req, res
    } else {
       if (date !== 'all') {
          db.query(
-            `SELECT * FROM \`task_submit\` WHERE id_task=${id} AND date_uploaded >= '${date}' ORDER by id_user`,
+            `SELECT * FROM \`task_submit\` WHERE id_task=${id} AND date_uploaded >= ${date} ORDER by id_user`,
             function(error, results, fields) {
                if (error) throw new Error('Something went wrong');
+               //console.log(results);
                if (results.length !== 0) {
                   cache.set(`id=${id}&from_value=${fromValue}`, [
                      resolveDataToLineChart(results, fromValue, id),
