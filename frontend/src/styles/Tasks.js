@@ -7,6 +7,7 @@ export const Wrapper = styled.main`
    flex-direction: column;
    align-items: center;
    background-color: ${props => props.theme.backgroundColor};
+   height: 100%;
    @media ${device.mobile} {
       /* padding-bottom: 25px; */
    }

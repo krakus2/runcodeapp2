@@ -9,7 +9,7 @@ class Tasks extends Component {
       tasks: []
    };
    async componentDidMount() {
-      const res = await axios.get('/api/tasks/tests');
+      const res = await axios.get('/api/tests');
       console.log(res.data);
       this.setState({ tasks: res.data });
    }

@@ -12,7 +12,7 @@ const Tasks = lazy(() => import('./components/pages/Tasks'));
 const theme = {
    primaryColor: '#009688',
    primaryColorDarker: '#00786c',
-   secondaryColor: '#3F51B5',
+   secondaryColor: '#039be5',
    errorColor: '#F44336',
    defaultSpacing: '8px',
    defaultFontSize: '16px',

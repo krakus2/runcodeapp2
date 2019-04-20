@@ -60,12 +60,31 @@ export async function getDataFromDB(fromValue, task_id) {
       const length = await cache.store.length();
       console.log('Cache store length:', length);
       return api({
-         url: `/api/tasks/tests/task_id=${task_id}&test_date=${sqlDate}&from_value=${fromValue}`,
+         url: `/api/tests/task_id=${task_id}&test_date=${sqlDate}&from_value=${fromValue}`,
          method: 'get'
       });
    } else {
       return api({
-         url: `/api/tasks/tests/task_id=${task_id}&test_date=all&from_value=${fromValue}`,
+         url: `/api/tests/task_id=${task_id}&test_date=all&from_value=${fromValue}`,
+         method: 'get'
+      });
+   }
+}
+
+export async function getDataFromDB2(fromValue, task_id, from, to) {
+   if (fromValue !== 'all') {
+      const d = new Date();
+      d.setDate(d.getDate() - fromValue);
+      const sqlDate = getSqlYear(d);
+      const length = await cache.store.length();
+      console.log('Cache store length:', length);
+      return api({
+         url: `/api/tests/task_id=${task_id}&test_date=${sqlDate}&from=${from}&to=${to}`,
+         method: 'get'
+      });
+   } else {
+      return api({
+         url: `/api/tests/task_id=${task_id}&test_date=all&from=${from}&to=${to}`,
          method: 'get'
       });
    }

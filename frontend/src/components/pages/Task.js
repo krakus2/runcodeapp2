@@ -4,7 +4,12 @@ import { withTheme } from 'styled-components';
 import Slider, { createSliderWithTooltip } from 'rc-slider';
 
 import withContext from '../../context/Context_HOC';
-import { addAlphaChannel, getDataFromDB, getParams } from '../../utils/utils';
+import {
+   addAlphaChannel,
+   getDataFromDB,
+   getDataFromDB2,
+   getParams
+} from '../../utils/utils';
 import { Wrapper, ChartWrapper, TopBar, theme, colourStyles } from '../../styles/Tasks';
 import { SliderWrapper } from '../../styles/Form';
 
@@ -32,35 +37,103 @@ class Task extends Component {
          }
       ],
       dataBar: [{}],
-      from: options[0],
-      fromValue: 7,
+      from: options[4],
+      fromValue: options[4].value,
       sliderValue: [1, 2],
-      loading: false
+      loading: false,
+      maxMinBar2Value: [5, 5],
+      chartColor: addAlphaChannel(this.props.theme.secondaryColor, '0.95')
    };
 
    async componentDidMount() {
       //console.log(this.props.context.taskTests);
       const params = getParams(window.location.search);
       const res = await getDataFromDB(this.state.fromValue, params.task_id);
+      const res2 = await getDataFromDB2(
+         this.state.fromValue,
+         params.task_id,
+         this.state.sliderValue[0],
+         this.state.sliderValue[1]
+      );
+      res.data[1][0].color = this.state.chartColor;
+      const bar1 = res.data[2].map(elem => ({
+         ...elem,
+         attemptColor: this.state.chartColor
+      }));
+      const bar2 = res2.data.map(elem => ({
+         ...elem,
+         sukcesColor: this.state.chartColor
+      }));
+      const maxMinBar2Value = bar2.reduce(
+         (acc, elem) => {
+            if (elem.sukces > acc[0]) {
+               acc[0] = elem.sukces;
+            }
+            if (elem.porazka < acc[1]) {
+               acc[1] = elem.porazka;
+            }
+            return acc;
+         },
+         [0, 0]
+      );
       this.setState({
-         dataLine: [res.data[0]],
+         dataLine: [
+            {
+               ...res.data[0],
+               color: this.state.chartColor
+            }
+         ],
          dataPie: res.data[1],
-         dataBar: res.data[2]
+         dataBar: bar1,
+         dataBar2: bar2,
+         maxMinBar2Value
       });
    }
 
    onSelectChange = async e => {
       const params = getParams(window.location.search);
-      this.setState({ loading: true });
       const res = await getDataFromDB(e.value, params.task_id);
-
+      const res2 = await getDataFromDB2(
+         e.value,
+         params.task_id,
+         this.state.sliderValue[0],
+         this.state.sliderValue[1]
+      );
+      res.data[1][0].color = this.state.chartColor;
+      const bar1 = res.data[2].map(elem => ({
+         ...elem,
+         attemptColor: this.state.chartColor
+      }));
+      const bar2 = res2.data.map(elem => ({
+         ...elem,
+         sukcesColor: this.state.chartColor
+      }));
+      const maxMinBar2Value = bar2.reduce(
+         (acc, elem) => {
+            if (elem.sukces > acc[0]) {
+               acc[0] = elem.sukces;
+            }
+            if (elem.porazka < acc[1]) {
+               acc[1] = elem.porazka;
+            }
+            return acc;
+         },
+         [0, 0]
+      );
       this.setState({
-         dataLine: [res.data[0]],
+         dataLine: [
+            {
+               ...res.data[0],
+               color: this.state.chartColor
+            }
+         ],
          dataPie: res.data[1],
-         dataBar: res.data[2],
+         dataBar: bar1,
+         dataBar2: bar2,
          from: { label: e.label, value: e.value },
          fromValue: e.value,
-         loading: false
+         loading: false,
+         maxMinBar2Value
       });
    };
 
@@ -68,12 +141,48 @@ class Task extends Component {
       this.setState({ sliderValue: [...value] });
    };
 
+   onSliderAfterChange = async value => {
+      this.setState({ loading: true });
+      const params = getParams(window.location.search);
+      const res = await getDataFromDB2(
+         this.state.fromValue,
+         params.task_id,
+         value[0],
+         value[1]
+      );
+
+      const dataBar2 = res.data.map(elem => ({
+         ...elem,
+         sukcesColor: this.state.chartColor
+      }));
+
+      const maxMinBar2Value = dataBar2.reduce(
+         (acc, elem) => {
+            if (elem.sukces > acc[0]) {
+               acc[0] = elem.sukces;
+            }
+            if (elem.porazka < acc[1]) {
+               acc[1] = elem.porazka;
+            }
+            return acc;
+         },
+         [0, 0]
+      );
+      this.setState({ dataBar2, loading: false, maxMinBar2Value });
+   };
+
    render() {
       /* const { taskTests } = this.props.context; */
-      const { dataPie, dataLine, dataBar, sliderValue } = this.state;
+      const {
+         dataPie,
+         dataLine,
+         dataBar,
+         dataBar2,
+         sliderValue,
+         maxMinBar2Value
+      } = this.state;
       return (
          <Wrapper>
-            {/*{!!this.state.loading && <p>loading...</p>} */}
             <TopBar>
                <h3>Statystyki zadania</h3>
                <Select
@@ -94,10 +203,6 @@ class Task extends Component {
                   value={this.state.from}
                />
             </TopBar>
-
-            {/* taskTests.map(elem => (
-               <div key={elem.id}>{new Date(elem.date_uploaded).toString()}</div>
-            )) */}
             <Suspense
                fallback={
                   <div
@@ -179,8 +284,7 @@ class Task extends Component {
                         left: 70
                      }}
                      padding={0.3}
-                     colors="nivo"
-                     colorBy="id"
+                     colorBy={({ data }) => data.attemptColor}
                      borderColor="inherit:darker(1.6)"
                      axisTop={null}
                      axisRight={null}
@@ -266,9 +370,9 @@ class Task extends Component {
                </ChartWrapper>
                <ChartWrapper>
                   <h3>Kolejny wykres</h3>
-                  {/* TODO - trzeba bedzie wylaczac slider, w momencie czekania na odpowiedz z serwera */}
-                  <SliderWrapper>
+                  <SliderWrapper disabled={this.state.loading}>
                      <Range
+                        disabled={this.state.loading}
                         min={1}
                         max={5}
                         dots
@@ -287,11 +391,56 @@ class Task extends Component {
                         }}
                         value={sliderValue}
                         onChange={this.onSliderValueChange}
+                        onAfterChange={this.onSliderAfterChange}
                      />
                   </SliderWrapper>
-                  <p style={{ textAlign: 'left' }}>
-                     Określ liczbę i typy parametrów wymaganych przez funkcję.
-                  </p>
+                  <p style={{ textAlign: 'left' }}>Opis kolejnego wykresu.</p>
+                  <ResponsiveBar
+                     data={dataBar2}
+                     keys={['porazka', 'sukces']}
+                     indexBy="ID"
+                     height={420}
+                     colorBy={function(e) {
+                        const t = e.id;
+                        return e.data[''.concat(t, 'Color')];
+                     }}
+                     minValue={-maxMinBar2Value[1] < 5 ? -5 : maxMinBar2Value[1]}
+                     maxValue={maxMinBar2Value[0] < 5 ? 5 : maxMinBar2Value[0]}
+                     margin={{
+                        top: 50,
+                        right: 70,
+                        bottom: 60,
+                        left: 70
+                     }}
+                     labelFormat={v => (v < 0 ? -v : v)}
+                     padding={0.3}
+                     borderColor="inherit:darker(1.6)"
+                     axisBottom={{
+                        tickSize: 5,
+                        tickPadding: 5,
+                        tickRotation: 0,
+                        legend: 'ID testu',
+                        legendPosition: 'middle',
+                        legendOffset: 45
+                     }}
+                     axisLeft={{
+                        tickSize: 5,
+                        tickPadding: 15,
+                        tickRotation: 0,
+                        legend: 'ilosc sukcesów i porażek ',
+                        legendPosition: 'middle',
+                        legendOffset: -60,
+                        format: v => (v < 0 ? -v : v)
+                     }}
+                     tooltipFormat={v => (v < 0 ? -v : v)}
+                     labelSkipWidth={12}
+                     labelSkipHeight={12}
+                     labelTextColor="inherit:darker(1.6)"
+                     animate={true}
+                     motionStiffness={90}
+                     motionDamping={15}
+                     theme={theme(14)}
+                  />
                </ChartWrapper>
             </Suspense>
          </Wrapper>

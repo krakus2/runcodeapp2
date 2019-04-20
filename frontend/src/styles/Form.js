@@ -88,20 +88,20 @@ export const SliderWrapper = styled.div`
    flex-direction: row;
    flex-wrap: wrap;
    width: 100%;
-
    .mySlider {
       /*  transition: all 2s; */
       :hover {
          .rc-slider-handle {
-            box-shadow: 0px 0px 6px -1px ${props => props.theme.primaryColor};
+            box-shadow: ${props =>
+               `0px 0px 6px -1px  ${!props.disabled && props.theme.primaryColor}`};
          }
          .rc-slider-rail {
-            background-color: ${props => props.theme.disabled};
+            background-color: ${props => !props.disabled && props.theme.disabled};
          }
       }
       :active {
          .rc-slider-handle {
-            box-shadow: 0px 0px 6px -1px ${props => props.theme.primaryColor};
+            box-shadow: 0px 0px 6px -1px ${props => !props.disabled && props.theme.primaryColor};
          }
       }
    }
