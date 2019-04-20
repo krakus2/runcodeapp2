@@ -47,7 +47,7 @@ const {
             }
          }
       }
-      originalMethod.apply(console, [...args, '\n', `  at ${initiator}`]);
+      originalMethod.apply(console, [...args, `\n at ${initiator}`]);
    };
 });
 
@@ -101,27 +101,25 @@ router.get('/tests', (req, res) => {
 // @access  Public
 //TODO - ustawic serwer tak, by co jakis czas sam czyscil cache ze starych obiektow
 //       za pomoca metody cache.prune()
+//TODO - ten cache cos nie zawsze dziala - wartosci z cache'a wywala tylko co ktores zapytanie
+//bo trzeba by sprawdzic z 2 roznych komputorow, bo na 1 po prostu cachuje front
 router.get('/tests/task_id=:id&test_date=:date&from_value=:fromValue', (req, res) => {
    const { id, date, fromValue } = req.params;
    if (cache.has(`id=${id}&from_value=${fromValue}`)) {
+      console.log('no elo z kesza');
       return res.json(cache.get(`id=${id}&from_value=${fromValue}`));
    } else {
       if (date !== 'all') {
          db.query(
-            `SELECT * FROM \`task_submit\` WHERE id_task=${id} AND date_uploaded >= ${date} ORDER by id_user`,
+            `SELECT * FROM \`task_submit\` WHERE id_task=${id} AND date_uploaded >= '${date}' ORDER by id_user`,
             function(error, results, fields) {
                if (error) throw new Error('Something went wrong');
-               //console.log(results);
-               if (results.length !== 0) {
-                  cache.set(`id=${id}&from_value=${fromValue}`, [
-                     resolveDataToLineChart(results, fromValue, id),
-                     resolveDataToPieChart(results),
-                     resolveDataToBarChart(results)
-                  ]);
-                  return res.json(cache.get(`id=${id}&from_value=${fromValue}`));
-               } else {
-                  return res.json({});
-               }
+               cache.set(`id=${id}&from_value=${fromValue}`, [
+                  resolveDataToLineChart(results, fromValue, id),
+                  resolveDataToPieChart(results, fromValue),
+                  resolveDataToBarChart(results)
+               ]);
+               return res.json(cache.get(`id=${id}&from_value=${fromValue}`));
             }
          );
       } else {
@@ -129,16 +127,12 @@ router.get('/tests/task_id=:id&test_date=:date&from_value=:fromValue', (req, res
             `SELECT * FROM \`task_submit\` WHERE id_task=${id} ORDER by id_user`,
             function(error, results, fields) {
                if (error) throw new Error('Something went wrong');
-               if (results.length !== 0) {
-                  cache.set(`id=${id}&from_value=${fromValue}`, [
-                     resolveDataToLineChart(results, fromValue, id),
-                     resolveDataToPieChart(results),
-                     resolveDataToBarChart(results)
-                  ]);
-                  return res.json(cache.get(`id=${id}&from_value=${fromValue}`));
-               } else {
-                  return res.json({});
-               }
+               cache.set(`id=${id}&from_value=${fromValue}`, [
+                  resolveDataToLineChart(results, fromValue, id),
+                  resolveDataToPieChart(results),
+                  resolveDataToBarChart(results)
+               ]);
+               return res.json(cache.get(`id=${id}&from_value=${fromValue}`));
             }
          );
       }

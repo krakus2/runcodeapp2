@@ -1,10 +1,12 @@
 import React, { Component, lazy, Suspense } from 'react';
 import Select from 'react-select';
 import { withTheme } from 'styled-components';
+import Slider, { createSliderWithTooltip } from 'rc-slider';
 
 import withContext from '../../context/Context_HOC';
 import { addAlphaChannel, getDataFromDB, getParams } from '../../utils/utils';
 import { Wrapper, ChartWrapper, TopBar, theme, colourStyles } from '../../styles/Tasks';
+import { SliderWrapper } from '../../styles/Form';
 
 const ResponsivePie = lazy(() => import('../layout/charts/Pie'));
 const ResponsiveLine = lazy(() => import('../layout/charts/Line'));
@@ -18,6 +20,9 @@ const options = [
    { value: 'all', label: 'w ogóle' }
 ];
 
+const SliderWithTooltip = createSliderWithTooltip(Slider);
+const Range = createSliderWithTooltip(Slider.Range);
+
 class Task extends Component {
    state = {
       dataPie: [{}],
@@ -29,6 +34,7 @@ class Task extends Component {
       dataBar: [{}],
       from: options[0],
       fromValue: 7,
+      sliderValue: [1, 2],
       loading: false
    };
 
@@ -58,9 +64,13 @@ class Task extends Component {
       });
    };
 
+   onSliderValueChange = value => {
+      this.setState({ sliderValue: [...value] });
+   };
+
    render() {
       /* const { taskTests } = this.props.context; */
-      const { dataPie, dataLine, dataBar } = this.state;
+      const { dataPie, dataLine, dataBar, sliderValue } = this.state;
       return (
          <Wrapper>
             {/*{!!this.state.loading && <p>loading...</p>} */}
@@ -191,6 +201,7 @@ class Task extends Component {
                         legendOffset: -60,
                         format: v => `${v}%`
                      }}
+                     tooltipFormat={v => `${v}%`}
                      labelSkipWidth={12}
                      labelSkipHeight={12}
                      labelTextColor="inherit:darker(1.6)"
@@ -252,6 +263,35 @@ class Task extends Component {
                         }
                      ]}
                   />
+               </ChartWrapper>
+               <ChartWrapper>
+                  <h3>Kolejny wykres</h3>
+                  {/* TODO - trzeba bedzie wylaczac slider, w momencie czekania na odpowiedz z serwera */}
+                  <SliderWrapper>
+                     <Range
+                        min={1}
+                        max={5}
+                        dots
+                        step={1}
+                        className="mySlider"
+                        style={{ margin: '20px 5px' }}
+                        activeDotStyle={{
+                           borderColor: this.props.theme.primaryColor
+                        }}
+                        dotStyle={{
+                           borderColor: this.props.theme.disabled
+                        }}
+                        trackStyle={[{ backgroundColor: this.props.theme.primaryColor }]}
+                        handleStyle={{
+                           borderColor: this.props.theme.primaryColor
+                        }}
+                        value={sliderValue}
+                        onChange={this.onSliderValueChange}
+                     />
+                  </SliderWrapper>
+                  <p style={{ textAlign: 'left' }}>
+                     Określ liczbę i typy parametrów wymaganych przez funkcję.
+                  </p>
                </ChartWrapper>
             </Suspense>
          </Wrapper>

@@ -117,9 +117,10 @@ const resolveDataToLineChart = (sqlData, fromValue, task_id) => {
       data: []
    };
 
+   const d = new Date();
+
    if (sqlData.length) {
       const subtract = subtractFunc(sqlData[sqlData.length - 1].date_uploaded);
-      const d = new Date();
       const howMany = fromValue === 'all' ? (subtract > 365 ? subtract : 365) : fromValue;
 
       for (let i = 0; i < howMany; i++) {
@@ -129,7 +130,6 @@ const resolveDataToLineChart = (sqlData, fromValue, task_id) => {
             y: 0
          });
       }
-
       sqlData.forEach((elem, i) => {
          const index = subtractFunc(elem.date_uploaded);
          if (index - 1 < data.data.length - 1) {
@@ -145,6 +145,14 @@ const resolveDataToLineChart = (sqlData, fromValue, task_id) => {
       }, 0);
 
       data.max = max;
+   } else {
+      for (let i = 0; i < fromValue; i++) {
+         d.setDate(d.getDate() - 1);
+         data.data.push({
+            x: getSqlYear(d),
+            y: 0
+         });
+      }
    }
    return data;
 };
@@ -155,75 +163,88 @@ const resolveDataToPieChart = sqlData => {
       { id: 'porażka', label: 'porażka', value: 0, color: 'red' }
    ];
 
-   sqlData.forEach((elem, i) => {
-      if (elem.error_count === 0) {
+   //TODO - zeby to bylo szybsze, zamiast continue mogloby byc break, ale musialbym byc pewien, ze daty sa coraz starsze w tablicy
+   //czyli najlepiej to zrobic zapytaniem sql
+   for (let i = 0; i < sqlData.length; i++) {
+      if (sqlData[i].error_count === 0) {
          data[0].value++;
       } else {
          data[1].value++;
       }
-   });
+   }
    return data;
 };
 
 const resolveDataToBarChart = sqlData => {
-   const data = sqlData.reduce((acc, elem, i, array) => {
-      if (i === 0) {
-         acc.push([{ ...elem }]);
-      } else {
-         if (array[i].id_user !== array[i - 1].id_user) {
+   if (sqlData.length) {
+      const data = sqlData.reduce((acc, elem, i, array) => {
+         if (i === 0) {
             acc.push([{ ...elem }]);
          } else {
-            acc[acc.length - 1].push({ ...elem });
+            if (array[i].id_user !== array[i - 1].id_user) {
+               acc.push([{ ...elem }]);
+            } else {
+               acc[acc.length - 1].push({ ...elem });
+            }
          }
-      }
-      return acc;
-   }, []);
+         return acc;
+      }, []);
 
-   const statsObj = {
-      success1: 0,
-      defeat1: 0,
-      success2: 0,
-      defeat2: 0,
-      success3: 0,
-      defeat3: 0
-   };
+      const map = sqlData.map(elem => JSON.parse(elem.test_list));
+      console.log(map);
 
-   data.forEach((elem, i) => {
-      if (elem[0] !== undefined) {
-         if (elem[0].error_count === 0) {
-            statsObj.success1++;
-         } else {
-            statsObj.defeat1++;
+      const statsObj = {
+         success1: 0,
+         defeat1: 0,
+         success2: 0,
+         defeat2: 0,
+         success3: 0,
+         defeat3: 0
+      };
+
+      data.forEach((elem, i) => {
+         if (elem[0] !== undefined) {
+            if (elem[0].error_count === 0) {
+               statsObj.success1++;
+            } else {
+               statsObj.defeat1++;
+            }
          }
-      }
-      if (elem[1] !== undefined) {
-         if (elem[1].error_count === 0) {
-            statsObj.success2++;
-         } else {
-            statsObj.defeat2++;
+         if (elem[1] !== undefined) {
+            if (elem[1].error_count === 0) {
+               statsObj.success2++;
+            } else {
+               statsObj.defeat2++;
+            }
          }
-      }
-      if (elem[2] !== undefined) {
-         if (elem[2].error_count === 0) {
-            statsObj.success3++;
-         } else {
-            statsObj.defeat3++;
+         if (elem[2] !== undefined) {
+            if (elem[2].error_count === 0) {
+               statsObj.success3++;
+            } else {
+               statsObj.defeat3++;
+            }
          }
-      }
-   });
-   const returnData = [];
-   for (let i = 0; i < 3; i++) {
-      returnData.push({
-         attempt: `${i + 1} próba`,
-         /* sukcesColor: "hsl(39, 70%, 50%)", */
-         value: Math.round(
-            (statsObj[`success${i + 1}`] /
-               (statsObj.success1 + statsObj[`defeat${i + 1}`])) *
-               100
-         )
       });
+      const returnData = [];
+      for (let i = 0; i < 3; i++) {
+         returnData.push({
+            attempt: `${i + 1} próba`,
+            /* attemptColor: 'hsl(63, 70%, 50%)', */
+            value: Math.round(
+               (statsObj[`success${i + 1}`] /
+                  (statsObj.success1 + statsObj[`defeat${i + 1}`])) *
+                  100
+            )
+         });
+      }
+      return returnData;
+   } else {
+      return [
+         { attempt: '1 próba', value: 0 },
+         { attempt: '2 próba', value: 0 },
+         { attempt: '3 próba', value: 0 }
+      ];
    }
-   return returnData;
 };
 
 module.exports = {

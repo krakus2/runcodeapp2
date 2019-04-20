@@ -8,10 +8,6 @@ import { SliderWrapper } from '../../../styles/Form';
 
 const SliderWithTooltip = createSliderWithTooltip(Slider);
 
-function percentFormatter(v) {
-   return `${v} %`;
-}
-
 const MySlider = ({ handleSliderChange, iloscArg, max, theme }) => {
    return (
       <SliderWrapper>
