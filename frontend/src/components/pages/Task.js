@@ -2,6 +2,7 @@ import React, { Component, lazy, Suspense } from 'react';
 import Select from 'react-select';
 import { withTheme } from 'styled-components';
 import Slider, { createSliderWithTooltip } from 'rc-slider';
+import Switch from '../reusable/Switch';
 
 import withContext from '../../context/Context_HOC';
 import {
@@ -37,12 +38,14 @@ class Task extends Component {
          }
       ],
       dataBar: [{}],
+      dataBar2: [{}],
       from: options[4],
       fromValue: options[4].value,
       sliderValue: [1, 2],
       loading: false,
       maxMinBar2Value: [5, 5],
-      chartColor: addAlphaChannel(this.props.theme.secondaryColor, '0.95')
+      chartColor: addAlphaChannel(this.props.theme.secondaryColor, '0.95'),
+      detailsClosed: true
    };
 
    async componentDidMount() {
@@ -169,6 +172,10 @@ class Task extends Component {
          [0, 0]
       );
       this.setState({ dataBar2, loading: false, maxMinBar2Value });
+   };
+
+   handleSwitchChange = name => event => {
+      this.setState({ [name]: !event.target.checked });
    };
 
    render() {
@@ -368,7 +375,7 @@ class Task extends Component {
                      ]}
                   />
                </ChartWrapper>
-               <ChartWrapper>
+               <ChartWrapper height={420}>
                   <h3>Kolejny wykres</h3>
                   <SliderWrapper disabled={this.state.loading}>
                      <Range
@@ -409,7 +416,7 @@ class Task extends Component {
                      margin={{
                         top: 50,
                         right: 70,
-                        bottom: 60,
+                        bottom: 20,
                         left: 70
                      }}
                      labelFormat={v => (v < 0 ? -v : v)}
@@ -432,7 +439,22 @@ class Task extends Component {
                         legendOffset: -60,
                         format: v => (v < 0 ? -v : v)
                      }}
-                     tooltipFormat={v => (v < 0 ? -v : v)}
+                     /* tooltipFormat={v => (v < 0 ? -v : v)} */
+                     tooltip={data =>
+                        console.log(data) || (
+                           <div>
+                              <p>
+                                 ID testu: <strong>{data.data.ID}</strong>
+                              </p>
+                              <p style={{ color: data.color }}>
+                                 Wartość:{' '}
+                                 <strong>
+                                    {data.value < 0 ? -data.value : data.value}
+                                 </strong>
+                              </p>
+                           </div>
+                        )
+                     }
                      labelSkipWidth={12}
                      labelSkipHeight={12}
                      labelTextColor="inherit:darker(1.6)"
@@ -441,6 +463,19 @@ class Task extends Component {
                      motionDamping={15}
                      theme={theme(14)}
                   />
+                  <Switch
+                     onChange={this.handleSwitchChange('detailsClosed')}
+                     value={!this.state.detailsClosed}
+                  />
+                  {!this.state.detailsClosed &&
+                     dataBar2.map(elem => (
+                        <div>
+                           <p>
+                              ID: {elem.ID} Nazwa Funkcji: {elem.nazwaFunkcji}
+                           </p>
+                           <p>Parametry Funkcji: {elem.parametry} </p>
+                        </div>
+                     ))}
                </ChartWrapper>
             </Suspense>
          </Wrapper>
