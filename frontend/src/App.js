@@ -13,7 +13,7 @@ const theme = {
    primaryColor: '#009688',
    primaryColorDarker: '#00786c',
    secondaryColor: '#039be5',
-   errorColor: '#F44336',
+   errorColor: '#f50057' /* '#F44336', */,
    defaultSpacing: '8px',
    defaultFontSize: '16px',
    color: 'rgba(0, 0, 0, 0.87)',

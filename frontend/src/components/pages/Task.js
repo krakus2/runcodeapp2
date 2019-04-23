@@ -11,7 +11,15 @@ import {
    getDataFromDB2,
    getParams
 } from '../../utils/utils';
-import { Wrapper, ChartWrapper, TopBar, theme, colourStyles } from '../../styles/Tasks';
+import {
+   Wrapper,
+   ChartWrapper,
+   TopBar,
+   theme,
+   colourStyles,
+   TableStyles,
+   SwitchWrapper
+} from '../../styles/Tasks';
 import { SliderWrapper } from '../../styles/Form';
 
 const ResponsivePie = lazy(() => import('../layout/charts/Pie'));
@@ -29,7 +37,98 @@ const options = [
 const SliderWithTooltip = createSliderWithTooltip(Slider);
 const Range = createSliderWithTooltip(Slider.Range);
 
+function scrollIt(destination, duration = 200, easing = 'linear', callback) {
+   const easings = {
+      linear(t) {
+         return t;
+      },
+      easeInQuad(t) {
+         return t * t;
+      },
+      easeOutQuad(t) {
+         return t * (2 - t);
+      },
+      easeInOutQuad(t) {
+         return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+      },
+      easeInCubic(t) {
+         return t * t * t;
+      },
+      easeOutCubic(t) {
+         return --t * t * t + 1;
+      },
+      easeInOutCubic(t) {
+         return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+      },
+      easeInQuart(t) {
+         return t * t * t * t;
+      },
+      easeOutQuart(t) {
+         return 1 - --t * t * t * t;
+      },
+      easeInOutQuart(t) {
+         return t < 0.5 ? 8 * t * t * t * t : 1 - 8 * --t * t * t * t;
+      },
+      easeInQuint(t) {
+         return t * t * t * t * t;
+      },
+      easeOutQuint(t) {
+         return 1 + --t * t * t * t * t;
+      },
+      easeInOutQuint(t) {
+         return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t;
+      }
+   };
+
+   const start = window.pageYOffset;
+   const startTime =
+      'now' in window.performance ? performance.now() : new Date().getTime();
+
+   const documentHeight = Math.max(
+      document.body.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.clientHeight,
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight
+   );
+   const windowHeight =
+      window.innerHeight ||
+      document.documentElement.clientHeight ||
+      document.getElementsByTagName('body')[0].clientHeight;
+
+   if ('requestAnimationFrame' in window === false) {
+      window.scroll(0, destination);
+      if (callback) {
+         callback();
+      }
+      return;
+   }
+
+   function scroll() {
+      const now = 'now' in window.performance ? performance.now() : new Date().getTime();
+      const time = Math.min(1, (now - startTime) / duration);
+      const timeFunction = easings[easing](time);
+      window.scroll(0, Math.ceil(timeFunction * (destination - start) + start));
+
+      if (window.pageYOffset === destination) {
+         if (callback) {
+            callback();
+         }
+         return;
+      }
+
+      requestAnimationFrame(scroll);
+   }
+
+   scroll();
+}
+
 class Task extends Component {
+   constructor(props) {
+      super(props);
+      this.tableRef = React.createRef();
+   }
+
    state = {
       dataPie: [{}],
       dataLine: [
@@ -175,7 +274,35 @@ class Task extends Component {
    };
 
    handleSwitchChange = name => event => {
-      this.setState({ [name]: !event.target.checked });
+      event.persist();
+      if (event.target.checked) {
+         this.setState({ [name]: !event.target.checked }, () => {
+            if (this.props.context.isMobile) {
+               const height = this.tableRef.current.offsetHeight;
+               window.scrollTo({
+                  left: 0,
+                  top: document.body.clientHeight - height - 85,
+                  behavior: 'smooth'
+               });
+            } else {
+               window.scrollTo({
+                  left: 0,
+                  top: document.body.clientHeight,
+                  behavior: 'smooth'
+               });
+            }
+         });
+      } else {
+         setTimeout(() => {
+            this.setState({ [name]: true });
+         }, 600);
+         const height = this.tableRef.current.offsetHeight;
+         window.scrollTo({
+            left: 0,
+            top: document.body.clientHeight - height - window.innerHeight,
+            behavior: 'smooth'
+         });
+      }
    };
 
    render() {
@@ -375,7 +502,12 @@ class Task extends Component {
                      ]}
                   />
                </ChartWrapper>
-               <ChartWrapper height={420}>
+               <ChartWrapper
+                  height={'auto'}
+                  marginBottom={'0px'}
+                  mobileHeight={'auto'}
+                  isMobile={this.props.context.isMobile}
+               >
                   <h3>Kolejny wykres</h3>
                   <SliderWrapper disabled={this.state.loading}>
                      <Range
@@ -402,6 +534,13 @@ class Task extends Component {
                      />
                   </SliderWrapper>
                   <p style={{ textAlign: 'left' }}>Opis kolejnego wykresu.</p>
+               </ChartWrapper>
+               <ChartWrapper
+                  height={420}
+                  mobileHeight={425}
+                  isMobile={this.props.context.isMobile}
+                  marginBottom={'10px'}
+               >
                   <ResponsiveBar
                      data={dataBar2}
                      keys={['porazka', 'sukces']}
@@ -440,21 +579,17 @@ class Task extends Component {
                         format: v => (v < 0 ? -v : v)
                      }}
                      /* tooltipFormat={v => (v < 0 ? -v : v)} */
-                     tooltip={data =>
-                        console.log(data) || (
-                           <div>
-                              <p>
-                                 ID testu: <strong>{data.data.ID}</strong>
-                              </p>
-                              <p style={{ color: data.color }}>
-                                 Wartość:{' '}
-                                 <strong>
-                                    {data.value < 0 ? -data.value : data.value}
-                                 </strong>
-                              </p>
-                           </div>
-                        )
-                     }
+                     tooltip={data => (
+                        <div>
+                           <p>
+                              ID testu: <strong>{data.data.ID}</strong>
+                           </p>
+                           <p style={{ color: data.color }}>
+                              Wartość:{' '}
+                              <strong>{data.value < 0 ? -data.value : data.value}</strong>
+                           </p>
+                        </div>
+                     )}
                      labelSkipWidth={12}
                      labelSkipHeight={12}
                      labelTextColor="inherit:darker(1.6)"
@@ -463,20 +598,43 @@ class Task extends Component {
                      motionDamping={15}
                      theme={theme(14)}
                   />
+               </ChartWrapper>
+               <SwitchWrapper marginBottom={this.state.detailsClosed}>
                   <Switch
+                     style={{ marginTop: '100px' }}
                      onChange={this.handleSwitchChange('detailsClosed')}
                      value={!this.state.detailsClosed}
                   />
-                  {!this.state.detailsClosed &&
-                     dataBar2.map(elem => (
-                        <div>
-                           <p>
-                              ID: {elem.ID} Nazwa Funkcji: {elem.nazwaFunkcji}
-                           </p>
-                           <p>Parametry Funkcji: {elem.parametry} </p>
-                        </div>
-                     ))}
-               </ChartWrapper>
+                  <span>
+                     Kliknij, aby rozwinąć <strong>szczegóły</strong> poszczególnych
+                     testów
+                  </span>
+               </SwitchWrapper>
+               {!this.state.detailsClosed && (
+                  <TableStyles ref={this.tableRef}>
+                     <ul className="responsive-table">
+                        <li className="table-header">
+                           <div className="col col-1">ID Zadania</div>
+                           <div className="col col-2">Nazwa Funkcji</div>
+                           <div className="col col-3">Parametry</div>
+                        </li>
+
+                        {dataBar2.map(elem => (
+                           <li className="table-row" key={elem.ID} ref={this.tableRef}>
+                              <div className="col col-1" data-label="ID Zadania">
+                                 <span>{elem.ID}</span>
+                              </div>
+                              <div className="col col-2" data-label="Nazwa Funkcji">
+                                 <span>{elem.nazwaFunkcji}</span>
+                              </div>
+                              <div className="col col-3" data-label="Parametry">
+                                 <span>{elem.parametry}</span>
+                              </div>
+                           </li>
+                        ))}
+                     </ul>
+                  </TableStyles>
+               )}
             </Suspense>
          </Wrapper>
       );
