@@ -104,6 +104,8 @@ function scrollIt(destination, duration = 200, easing = 'linear', callback) {
       return;
    }
 
+   //TODO - jak jest duzo testów np. 10, to scroll nie powinien jechać na koniec, tylko kawałek w dół
+   //tak jak na mobile'u
    function scroll() {
       const now = 'now' in window.performance ? performance.now() : new Date().getTime();
       const time = Math.min(1, (now - startTime) / duration);
@@ -619,14 +621,14 @@ class Task extends Component {
                   <TableStyles ref={this.tableRef}>
                      <ul className="responsive-table">
                         <li className="table-header">
-                           <div className="col col-1">ID Zadania</div>
+                           <div className="col col-1">ID Testu</div>
                            <div className="col col-2">Nazwa Funkcji</div>
                            <div className="col col-3">Parametry</div>
                         </li>
 
                         {dataBar2.map(elem => (
                            <li className="table-row" key={elem.ID} ref={this.tableRef}>
-                              <div className="col col-1" data-label="ID Zadania">
+                              <div className="col col-1" data-label="ID Testu">
                                  <span>{elem.ID}</span>
                               </div>
                               <div className="col col-2" data-label="Nazwa Funkcji">
