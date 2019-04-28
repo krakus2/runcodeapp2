@@ -449,7 +449,12 @@ class Task extends Component {
                      theme={theme(14)}
                   />
                </ChartWrapper>
-               <ChartWrapper>
+               <ChartWrapper
+                  mobileHeight={290}
+                  mobileWidth={320}
+                  marginBottom={'10px'}
+                  isMobile={this.props.context.isMobile}
+               >
                   <h3>Liczba poprawnych i błędnych rozwiązań zadania</h3>
                   <ResponsivePie
                      data={dataPie}

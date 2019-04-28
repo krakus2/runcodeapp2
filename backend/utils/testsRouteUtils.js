@@ -169,6 +169,9 @@ const resolveDataToBarChart2 = (sqlData, from, to) => {
          return acc;
       }, []);
 
+      //TODO - spytac czy usuwanie takich z pustym test_list jest okej,
+      //prawdopodobnie trzeba bedzie to jakos przerobic, bo te errory w polu error_list
+      //moga swiadczyc o niepoprawnie wykonanym zadaniu
       data = data
          .map(elem =>
             elem.reduce((acc, elem2) => {
@@ -182,6 +185,8 @@ const resolveDataToBarChart2 = (sqlData, from, to) => {
             }, [])
          )
          .filter(elem => elem.length > 0);
+
+      console.log(data[0][0]);
 
       const reg1 = /ID: [0-9]+/g;
       const reg2 = /F: \w+/g;
@@ -205,10 +210,19 @@ const resolveDataToBarChart2 = (sqlData, from, to) => {
          for (let index = from; index <= to; index++) {
             if (elem[index - 1] !== undefined) {
                elem[index - 1].test_list.forEach(test => {
-                  if (Number(test.match(reg3)[0].substring(3)) === 1) {
-                     returnData[Number(test.match(reg1)[0].substring(4)) - 1].sukces++;
+                  if (
+                     !!test.match(reg3) &&
+                     Number(test.match(reg3)[0].substring(3)) === 1
+                  ) {
+                     !!test.match(reg1) &&
+                        returnData[Number(test.match(reg1)[0].substring(4)) - 1].sukces++;
                   } else {
-                     returnData[Number(test.match(reg1)[0].substring(4)) - 1].porazka--;
+                     console.log(
+                        !!test.match(reg1) && Number(test.match(reg1)[0].substring(4)) - 1
+                     );
+                     !!test.match(reg1) &&
+                        returnData[Number(test.match(reg1)[0].substring(4)) - 1]
+                           .porazka--;
                   }
                });
             }

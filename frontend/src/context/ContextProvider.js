@@ -8,8 +8,8 @@ export class ContextProvider extends Component {
    constructor() {
       super();
       this.state = {
-         isMobile: false,
-         taskTests: []
+         isMobile: false
+         /* taskTests: [] */
          /*imieINazwisko: "",
             nazwaFunkcji: "",
             tytulZadania: "",
@@ -32,9 +32,9 @@ export class ContextProvider extends Component {
         this.setState({ code: newValue });
     };*/
 
-   addTask = taskTests => {
+   /* addTask = taskTests => {
       this.setState({ taskTests });
-   };
+   }; */
 
    componentDidMount() {
       if (window.innerWidth < 1000) {
@@ -50,8 +50,10 @@ export class ContextProvider extends Component {
 
    shouldComponentUpdate(nextProps, nextState) {
       if (
-         nextState.isMobile === this.state.isMobile &&
-         nextState.taskTests[0] === this.state.taskTests[0]
+         nextState.isMobile ===
+         this.state
+            .isMobile /* &&
+         nextState.taskTests[0] === this.state.taskTests[0] */
       ) {
          return false;
       }
@@ -83,8 +85,8 @@ export class ContextProvider extends Component {
       return (
          <AppContext.Provider
             value={{
-               ...this.state,
-               addTask: this.addTask
+               ...this.state
+               /* addTask: this.addTask */
                //handleTextInputChange: this.handleTextInputChange,
             }}
          >

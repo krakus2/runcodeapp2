@@ -51,7 +51,12 @@ export const ChartWrapper = styled.div`
          '500px'};
    }
    @media ${device.mobile} {
-      width: 90%;
+      width: ${props =>
+         (props.mobileWidth &&
+            props.mobileWidth !== 'auto' &&
+            `${props.mobileWidth}px`) ||
+         (props.mobileWidth === 'auto' && 'auto') ||
+         '90%'};
       margin-left: 20px;
       margin-right: 20px;
       height: ${props =>

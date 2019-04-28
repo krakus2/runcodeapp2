@@ -22,7 +22,9 @@ const cache = new LRU(options);
 // @desc    get tasks from sql database
 // @access  Public
 router.get('/', (req, res) => {
-   const result = {};
+   const result = new Set();
+   //const result = {};
+   //const resultSet = new Set();
    if (cache.has('tests')) {
       return res.json(cache.get('tests'));
    } else {
@@ -31,14 +33,16 @@ router.get('/', (req, res) => {
          if (error) throw new Error('Something went wrong');
          if (results.length !== 0) {
             results.forEach((elem, i) => {
-               if (result[elem.id_task] === undefined) {
+               result.add(elem.id_task);
+               /*if (result[elem.id_task] === undefined) {
                   result[elem.id_task] = [];
+                  //resultSet.add(elem.id_task);
+                  result[elem.id_task].push(elem.id_task);
+               }  else if (!resultSet.has(elem.id_task)) {
                   result[elem.id_task].push(elem);
-               } else {
-                  result[elem.id_task].push(elem);
-               }
+               } */
             });
-            cache.set('tests', result);
+            cache.set('tests', Array.from(result).sort((x, y) => x - y));
             return res.json(cache.get('tests'));
          } else {
             return res.json({});
