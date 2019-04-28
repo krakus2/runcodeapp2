@@ -11,7 +11,7 @@ require('./startup/logging')();
 require('./startup/routes')(app);
 require('./startup/db')();
 
-if (process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === 'production') {
    //set static folder
    const buildPath = path.join(__dirname, '../', 'frontend', 'build');
    app.use(express.static(buildPath));

@@ -1,9 +1,10 @@
 const mysql = require('mysql');
+const config = require('config');
 
 const db = mysql.createConnection({
    host: 'db4free.net',
    user: 'runcodeapp',
-   password: 'aGOHnkn5',
+   password: config.get('sqlPassword'),
    database: 'runcodeapp'
 });
 
