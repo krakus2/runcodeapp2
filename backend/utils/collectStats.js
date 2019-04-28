@@ -1,10 +1,6 @@
 const { differenceInDays } = require('date-fns');
 const data = require('../JSONfromSQL/task_submit.json');
 
-//TODO - w tym pliku beda dwie funkcje:
-//1. liczaca wszystkie te statystyki dla wszystkich zadan
-//2. liczaca statystyki dla konkretnego zadania, dzialajaca na zmienna podana w zapytaniu html (bedaca id zadania)
-
 function roundNumber(number) {
    if (number === 0 || isNaN(number)) {
       return 0;

@@ -73,8 +73,6 @@ const resolveDataToPieChart = sqlData => {
       { id: 'porażka', label: 'porażka', value: 0, color: '#f50057' }
    ];
 
-   //TODO - zeby to bylo szybsze, zamiast continue mogloby byc break, ale musialbym byc pewien, ze daty sa coraz starsze w tablicy
-   //czyli najlepiej to zrobic zapytaniem sql
    for (let i = 0; i < sqlData.length; i++) {
       if (sqlData[i].error_count === 0) {
          data[0].value++;

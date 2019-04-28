@@ -25,6 +25,7 @@ class Tasks extends Component {
    render() {
       const { tasks } = this.state;
       const { context } = this.props;
+      //TODO - zrobic paginacje, albo ininite scrolling
       return (
          <Wrapper isMobile={context.isMobile}>
             <h3>Lista dodanych zadań</h3>

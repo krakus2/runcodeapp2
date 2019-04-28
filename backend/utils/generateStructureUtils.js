@@ -31,7 +31,6 @@ const returnValue = value => {
 
 // prettier-ignore
 //TODO - ta funkcja powinna sprawdzac, czy wszystkie elementy tablicy sa takiego samego typu
-//TODO - DONE sprawdzic czy mozna przekazac na przyklad pusta tablice
 const returnArrayValue = value => {
    if (typeof value !== 'string' || value.length === 0) return [];
    return value.split(',').map(elem => {

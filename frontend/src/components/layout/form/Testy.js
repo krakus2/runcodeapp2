@@ -98,7 +98,6 @@ class Testy extends Component {
             );
          }
       }
-      //TODO - moznaby dodać margines, jesli pierwszy z brzegu input testowy jest tablicą, bo klamerki sa blisko krawedzi
       return (
          <>
             <RowWrapper column>

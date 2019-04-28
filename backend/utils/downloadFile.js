@@ -27,7 +27,6 @@ const apiCall = async () => {
    testy.forEach(zadanie => {
       const nazwaPliku = `${zadanie[0]}.json`;
       const tablicaTestow = [];
-      //TODO - czy przez te petle for nie uciekaja mi jakies dane
       for (let i = 1; i < zadanie.length; i++) {
          tablicaTestow.push(zadanie[i]);
       }

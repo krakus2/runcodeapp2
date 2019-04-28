@@ -94,7 +94,7 @@ export function memoize(f) {
    let store = new Map(JSON.parse(localStorage.getItem('store'))) || new Map();
 
    return function(...args) {
-      //TODO - dodaj maxAge
+      //dodać maxAge
       const k = JSON.stringify(args);
       if (store.has(k)) {
          console.log('z cachem');

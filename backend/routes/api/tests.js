@@ -29,7 +29,8 @@ router.get('/', (req, res) => {
       return res.json(cache.get('tests'));
    } else {
       db.query('SELECT * FROM `task_submit`', function(error, results, fields) {
-         //TODO - moznaby zwracac same id w tablicy
+         //TODO - czy ten widok nie powinien byc bardziej szczegolowy, np. zamiast samych ID
+         //tytuly tych zadan
          if (error) throw new Error('Something went wrong');
          if (results.length !== 0) {
             results.forEach((elem, i) => {
