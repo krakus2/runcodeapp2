@@ -30,7 +30,16 @@ class Tasks extends Component {
             <h3>Lista dodanych zadań</h3>
             <ul>
                {this.state.loading ? (
-                  <p>Ładowanie trwa...</p>
+                  <p
+                     style={{
+                        textAlign: 'center',
+                        fontSize: '24px',
+                        fontWeight: '700',
+                        margin: '20px 0'
+                     }}
+                  >
+                     Ładowanie trwa...
+                  </p>
                ) : (
                   tasks.map(task_id => (
                      <Line
