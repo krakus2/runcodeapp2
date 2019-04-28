@@ -20,8 +20,8 @@
       "delete": "npm run delete --prefix backend",
       "generateData": "npm run generateData --prefix backend",
       "prod-forever": "npm run delete && npm run build --prefix frontend && npm run server-forever",
-      "heroku-build": "npm install --prefix backend && npm install --prefix frontend",
-      "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run build --prefix frontend"
+      "heroku-build": "NPM_CONFIG_PRODUCTION=false npm run build --prefix frontend",
+      "heroku-postbuild": "npm install --prefix backend && npm install --prefix frontend"
    },
    "author": "Filip Krakowiak",
    "license": "ISC",
