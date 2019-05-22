@@ -10,7 +10,7 @@ export default withContext(function({ code, onEditorChange, context }) {
    };
    /* TODO - rozwiazanie z podaniem window.innerWidth nie jest dynamiczne, wiec podaje hard coded value*/
    const props = {
-      width: context.isMobile ? 370 : ''
+      width: context.isMobile ? 300 : ''
    };
    return (
       <Suspense
