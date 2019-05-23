@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withTheme } from 'styled-components';
 import withContext from '../../context/Context_HOC';
@@ -93,12 +93,22 @@ class Header extends Component {
          <MyAppBar>
             <HeaderWrapper>
                <Links>
-                  <Link to="/" className="links links__runcode">
+                  <NavLink
+                     to="/"
+                     exact
+                     className="links links__runcode"
+                     activeClassName="active"
+                  >
                      RUNCODE
-                  </Link>
-                  <Link to="/tasks" className="links links__tasks">
+                  </NavLink>
+                  <NavLink
+                     to="/tasks"
+                     exact
+                     className="links links__tasks"
+                     activeClassName="active"
+                  >
                      TASKS
-                  </Link>
+                  </NavLink>
                </Links>
                <FormWrapper
                   error={emailErr || passwordErr || loginErr}

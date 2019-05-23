@@ -51,8 +51,9 @@ export const Links = styled.div`
    .links {
       text-decoration: none;
    }
+
    .links__tasks {
-      color: ${props => props.theme.primaryColor};
+      color: ${props => props.theme.color};
    }
 
    .links__runcode {
@@ -64,10 +65,14 @@ export const Links = styled.div`
          margin-bottom: 5px;
       }
    }
+   .active {
+      color: ${props => props.theme.primaryColor};
+   }
 
    @media ${device.desktop} {
       a:first-child {
          :after {
+            color: ${props => props.theme.color};
             content: '|';
             margin-left: 30px;
             position: relative;
