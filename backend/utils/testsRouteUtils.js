@@ -69,11 +69,13 @@ const resolveDataToLineChart = (sqlData, fromValue, task_id) => {
 
 const resolveDataToPieChart = sqlData => {
    const data = [
-      { id: 'sukces', label: 'sukces', value: 0, color: 'green' },
-      { id: 'porażka', label: 'porażka', value: 0, color: '#f50057' }
+      { id: 'sukces', label: 'sukces', value: 0, color: 'green', all: 0 },
+      { id: 'porażka', label: 'porażka', value: 0, color: '#f50057', all: 0 }
    ];
 
    for (let i = 0; i < sqlData.length; i++) {
+      data[0].all++;
+      data[1].all++;
       if (sqlData[i].error_count === 0) {
          data[0].value++;
       } else {
@@ -137,9 +139,10 @@ const resolveDataToBarChart = sqlData => {
             /* attemptColor: addAlphaChannel('#009688', '0.8'), */
             value: Math.round(
                (statsObj[`success${i + 1}`] /
-                  (statsObj.success1 + statsObj[`defeat${i + 1}`])) *
+                  (statsObj[`success${i + 1}`] + statsObj[`defeat${i + 1}`])) *
                   100
-            )
+            ),
+            counter: statsObj[`success${i + 1}`] + statsObj[`defeat${i + 1}`]
          });
       }
       return returnData;
@@ -154,6 +157,7 @@ const resolveDataToBarChart = sqlData => {
 
 const resolveDataToBarChart2 = (sqlData, from, to) => {
    if (sqlData.length) {
+      console.log(sqlData.length);
       let data = sqlData.reduce((acc, elem, i, array) => {
          if (i === 0) {
             acc.push([{ ...elem }]);
@@ -166,6 +170,11 @@ const resolveDataToBarChart2 = (sqlData, from, to) => {
          }
          return acc;
       }, []);
+      const ile = data.reduce((acc, elem) => {
+         acc += elem.length;
+         return acc;
+      }, 0);
+      console.log(ile);
 
       //TODO - spytac czy usuwanie takich z pustym test_list jest okej,
       //prawdopodobnie trzeba bedzie to jakos przerobic, bo te errory w polu error_list
@@ -184,7 +193,12 @@ const resolveDataToBarChart2 = (sqlData, from, to) => {
          )
          .filter(elem => elem.length > 0);
 
-      console.log(data[0][0]);
+      const ile2 = data.reduce((acc, elem) => {
+         acc += elem.length;
+         return acc;
+      }, 0);
+      console.log(ile2);
+      console.log(data[0]);
 
       const reg1 = /ID: [0-9]+/g;
       const reg2 = /F: \w+/g;
@@ -203,26 +217,31 @@ const resolveDataToBarChart2 = (sqlData, from, to) => {
       returnData.sort((elem1, elem2) => {
          return Number(elem1.ID) > Number(elem2.ID);
       });
-
+      let counter = 0;
+      //console.log(returnData);
       data.forEach((elem, i) => {
          for (let index = from; index <= to; index++) {
+            //console.log(index);
             if (elem[index - 1] !== undefined) {
                elem[index - 1].test_list.forEach(test => {
                   if (
                      !!test.match(reg3) &&
                      Number(test.match(reg3)[0].substring(3)) === 1
                   ) {
+                     //console.log(++counter);
                      !!test.match(reg1) &&
                         returnData[Number(test.match(reg1)[0].substring(4)) - 1].sukces++;
                   } else {
-                     console.log(
+                     /* console.log(
                         !!test.match(reg1) && Number(test.match(reg1)[0].substring(4)) - 1
-                     );
+                     ); */
                      !!test.match(reg1) &&
                         returnData[Number(test.match(reg1)[0].substring(4)) - 1]
                            .porazka--;
                   }
                });
+            } else {
+               console.log(++counter);
             }
          }
       });

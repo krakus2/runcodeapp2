@@ -34,96 +34,7 @@ const options = [
    { value: 'all', label: 'w ogóle' }
 ];
 
-const SliderWithTooltip = createSliderWithTooltip(Slider);
 const Range = createSliderWithTooltip(Slider.Range);
-
-function scrollIt(destination, duration = 200, easing = 'linear', callback) {
-   const easings = {
-      linear(t) {
-         return t;
-      },
-      easeInQuad(t) {
-         return t * t;
-      },
-      easeOutQuad(t) {
-         return t * (2 - t);
-      },
-      easeInOutQuad(t) {
-         return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-      },
-      easeInCubic(t) {
-         return t * t * t;
-      },
-      easeOutCubic(t) {
-         return --t * t * t + 1;
-      },
-      easeInOutCubic(t) {
-         return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-      },
-      easeInQuart(t) {
-         return t * t * t * t;
-      },
-      easeOutQuart(t) {
-         return 1 - --t * t * t * t;
-      },
-      easeInOutQuart(t) {
-         return t < 0.5 ? 8 * t * t * t * t : 1 - 8 * --t * t * t * t;
-      },
-      easeInQuint(t) {
-         return t * t * t * t * t;
-      },
-      easeOutQuint(t) {
-         return 1 + --t * t * t * t * t;
-      },
-      easeInOutQuint(t) {
-         return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t;
-      }
-   };
-
-   const start = window.pageYOffset;
-   const startTime =
-      'now' in window.performance ? performance.now() : new Date().getTime();
-
-   const documentHeight = Math.max(
-      document.body.scrollHeight,
-      document.body.offsetHeight,
-      document.documentElement.clientHeight,
-      document.documentElement.scrollHeight,
-      document.documentElement.offsetHeight
-   );
-   const windowHeight =
-      window.innerHeight ||
-      document.documentElement.clientHeight ||
-      document.getElementsByTagName('body')[0].clientHeight;
-
-   if ('requestAnimationFrame' in window === false) {
-      window.scroll(0, destination);
-      if (callback) {
-         callback();
-      }
-      return;
-   }
-
-   //TODO - jak jest duzo testów np. 10, to scroll nie powinien jechać na koniec, tylko kawałek w dół
-   //tak jak na mobile'u
-   function scroll() {
-      const now = 'now' in window.performance ? performance.now() : new Date().getTime();
-      const time = Math.min(1, (now - startTime) / duration);
-      const timeFunction = easings[easing](time);
-      window.scroll(0, Math.ceil(timeFunction * (destination - start) + start));
-
-      if (window.pageYOffset === destination) {
-         if (callback) {
-            callback();
-         }
-         return;
-      }
-
-      requestAnimationFrame(scroll);
-   }
-
-   scroll();
-}
 
 class Task extends Component {
    constructor(props) {
@@ -132,7 +43,7 @@ class Task extends Component {
    }
 
    state = {
-      dataPie: [{}],
+      dataPie: [{ value: 0 }, { value: 0 }],
       dataLine: [
          {
             data: []
@@ -353,6 +264,137 @@ class Task extends Component {
                   </div>
                }
             >
+               <ChartWrapper>
+                  <h3>Statystyki poszczególnych podejść</h3>
+                  <ResponsiveBar
+                     data={dataBar}
+                     keys={['value']}
+                     indexBy="attempt"
+                     labelFormat={v => `${v}%`}
+                     margin={{
+                        top: 50,
+                        right: 70,
+                        bottom: 60,
+                        left: 70
+                     }}
+                     padding={0.3}
+                     colorBy={({ data }) => data.attemptColor}
+                     borderColor="inherit:darker(1.6)"
+                     axisTop={null}
+                     axisRight={null}
+                     axisBottom={{
+                        tickSize: 5,
+                        tickPadding: 5,
+                        tickRotation: 0,
+                        legend: 'podejście',
+                        legendPosition: 'middle',
+                        legendOffset: 45
+                     }}
+                     axisLeft={{
+                        tickSize: 5,
+                        tickPadding: 15,
+                        tickRotation: 0,
+                        legend: 'procent sukcesów',
+                        legendPosition: 'middle',
+                        legendOffset: -60,
+                        format: v => `${v}%`
+                     }}
+                     tooltip={data => (
+                        <div>
+                           <p>
+                              <strong style={{ color: data.color }}>
+                                 {data.data.value}%
+                              </strong>{' '}
+                              dobrych rozwiązań z <strong>{data.data.counter}</strong>
+                           </p>
+                        </div>
+                     )}
+                     labelSkipWidth={12}
+                     labelSkipHeight={12}
+                     labelTextColor="inherit:darker(1.6)"
+                     animate={true}
+                     motionStiffness={90}
+                     motionDamping={15}
+                     theme={theme(14)}
+                  />
+               </ChartWrapper>
+               <ChartWrapper
+                  mobileHeight={290}
+                  mobileWidth={320}
+                  marginBottom={'10px'}
+                  isMobile={this.props.context.isMobile}
+               >
+                  <h3>Liczba poprawnych i błędnych rozwiązań zadania</h3>
+                  <p style={{ marginTop: '10px' }}>
+                     Wszystkich podejść{' '}
+                     <strong>{dataPie[0].value + dataPie[1].value}</strong>
+                  </p>
+                  <ResponsivePie
+                     data={dataPie}
+                     margin={{
+                        top: -40,
+                        right: 80,
+                        bottom: 0,
+                        left: 80
+                     }}
+                     innerRadius={0.5}
+                     padAngle={0.7}
+                     cornerRadius={3}
+                     colors="paired"
+                     colorBy={e => e.color}
+                     borderWidth={1}
+                     borderColor="inherit:darker(0)"
+                     radialLabelsSkipAngle={10}
+                     radialLabelsTextXOffset={6}
+                     radialLabelsTextColor="#333333"
+                     radialLabelsLinkOffset={0}
+                     radialLabelsLinkDiagonalLength={16}
+                     radialLabelsLinkHorizontalLength={16}
+                     radialLabelsLinkStrokeWidth={1}
+                     radialLabelsLinkColor="#000000"
+                     slicesLabelsSkipAngle={10}
+                     slicesLabelsTextColor="#333333"
+                     animate={true}
+                     motionStiffness={90}
+                     motionDamping={15}
+                     tooltip={data =>
+                        console.log(data) || (
+                           <div>
+                              <p>
+                                 <strong style={{ color: data.color }}>
+                                    {data.value}
+                                 </strong>{' '}
+                                 czyli{' '}
+                                 <strong>
+                                    {Math.round((data.value / data.all) * 100)}%
+                                 </strong>
+                              </p>
+                           </div>
+                        )
+                     }
+                     legends={[
+                        {
+                           anchor: 'bottom',
+                           direction: 'row',
+                           translateY: 56,
+                           translateX: 30,
+                           itemWidth: 100,
+                           itemHeight: 18,
+                           itemTextColor: '#999',
+                           symbolSize: 18,
+                           symbolShape: 'circle',
+                           effects: [
+                              {
+                                 on: 'hover',
+                                 style: {
+                                    itemTextColor: '#000'
+                                 }
+                              }
+                           ]
+                        }
+                     ]}
+                  />
+               </ChartWrapper>
                <ChartWrapper width={900}>
                   <h3>Liczba testów w wybranym okresie</h3>
                   <ResponsiveLine
@@ -406,116 +448,13 @@ class Task extends Component {
                      theme={theme(18)}
                   />
                </ChartWrapper>
-               <ChartWrapper>
-                  <h3>Statystyki poszczególnych podejść</h3>
-                  <ResponsiveBar
-                     data={dataBar}
-                     keys={['value']}
-                     indexBy="attempt"
-                     labelFormat={v => `${v}%`}
-                     margin={{
-                        top: 50,
-                        right: 70,
-                        bottom: 60,
-                        left: 70
-                     }}
-                     padding={0.3}
-                     colorBy={({ data }) => data.attemptColor}
-                     borderColor="inherit:darker(1.6)"
-                     axisTop={null}
-                     axisRight={null}
-                     axisBottom={{
-                        tickSize: 5,
-                        tickPadding: 5,
-                        tickRotation: 0,
-                        legend: 'podejście',
-                        legendPosition: 'middle',
-                        legendOffset: 45
-                     }}
-                     axisLeft={{
-                        tickSize: 5,
-                        tickPadding: 15,
-                        tickRotation: 0,
-                        legend: 'procent sukcesów',
-                        legendPosition: 'middle',
-                        legendOffset: -60,
-                        format: v => `${v}%`
-                     }}
-                     tooltipFormat={v => `${v}%`}
-                     labelSkipWidth={12}
-                     labelSkipHeight={12}
-                     labelTextColor="inherit:darker(1.6)"
-                     animate={true}
-                     motionStiffness={90}
-                     motionDamping={15}
-                     theme={theme(14)}
-                  />
-               </ChartWrapper>
-               <ChartWrapper
-                  mobileHeight={290}
-                  mobileWidth={320}
-                  marginBottom={'10px'}
-                  isMobile={this.props.context.isMobile}
-               >
-                  <h3>Liczba poprawnych i błędnych rozwiązań zadania</h3>
-                  <ResponsivePie
-                     data={dataPie}
-                     margin={{
-                        top: -40,
-                        right: 80,
-                        bottom: 0,
-                        left: 80
-                     }}
-                     innerRadius={0.5}
-                     padAngle={0.7}
-                     cornerRadius={3}
-                     colors="paired"
-                     colorBy={e => e.color}
-                     borderWidth={1}
-                     borderColor="inherit:darker(0)"
-                     radialLabelsSkipAngle={10}
-                     radialLabelsTextXOffset={6}
-                     radialLabelsTextColor="#333333"
-                     radialLabelsLinkOffset={0}
-                     radialLabelsLinkDiagonalLength={16}
-                     radialLabelsLinkHorizontalLength={16}
-                     radialLabelsLinkStrokeWidth={1}
-                     radialLabelsLinkColor="#000000"
-                     slicesLabelsSkipAngle={10}
-                     slicesLabelsTextColor="#333333"
-                     animate={true}
-                     motionStiffness={90}
-                     motionDamping={15}
-                     legends={[
-                        {
-                           anchor: 'bottom',
-                           direction: 'row',
-                           translateY: 56,
-                           translateX: 30,
-                           itemWidth: 100,
-                           itemHeight: 18,
-                           itemTextColor: '#999',
-                           symbolSize: 18,
-                           symbolShape: 'circle',
-                           effects: [
-                              {
-                                 on: 'hover',
-                                 style: {
-                                    itemTextColor: '#000'
-                                 }
-                              }
-                           ]
-                        }
-                     ]}
-                  />
-               </ChartWrapper>
                <ChartWrapper
                   height={'auto'}
                   marginBottom={'0px'}
                   mobileHeight={'auto'}
                   isMobile={this.props.context.isMobile}
                >
-                  <h3>Kolejny wykres</h3>
+                  <h3>Statystyki testów</h3>
                   <SliderWrapper disabled={this.state.loading}>
                      <Range
                         disabled={this.state.loading}
@@ -540,7 +479,7 @@ class Task extends Component {
                         onAfterChange={this.onSliderAfterChange}
                      />
                   </SliderWrapper>
-                  <p style={{ textAlign: 'left' }}>Opis kolejnego wykresu.</p>
+                  <p style={{ textAlign: 'left' }}>Wybierz liczbę prób rozwiązania</p>
                </ChartWrapper>
                <ChartWrapper
                   height={420}
@@ -613,7 +552,7 @@ class Task extends Component {
                      value={!this.state.detailsClosed}
                   />
                   <span>
-                     Kliknij, aby rozwinąć <strong>szczegóły</strong> poszczególnych
+                     Kliknij, aby wyświetlić <strong>szczegóły</strong> dla poszczególnych
                      testów
                   </span>
                </SwitchWrapper>
